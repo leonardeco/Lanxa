@@ -78,16 +78,7 @@ const LoginView: React.FC = () => {
     <div className="login-container">
       <div className="login-glass-card fade-in">
         <div className="login-header">
-          <svg viewBox="0 0 40 40" width={48} height={48} aria-label="Lanxa" className="login-logo-small" style={{ display: 'block', margin: '0 auto' }}>
-            <defs>
-              <linearGradient id="lanxa-login" x1="0" y1="1" x2="1" y2="0">
-                <stop offset="0" stopColor="#7c5cff" />
-                <stop offset="1" stopColor="#1fe6cd" />
-              </linearGradient>
-            </defs>
-            <path d="M9 31 L21 7 L26 7 L14 31 Z" fill="url(#lanxa-login)" />
-            <path d="M18 31 L30 7 L35 7 L23 31 Z" fill="url(#lanxa-login)" opacity={0.55} />
-          </svg>
+          <img src="/favicon.svg" width={56} height={56} alt="Lanxa" className="login-logo-small" style={{ display: 'block', margin: '0 auto' }} />
           <h2>Lanxa ERP</h2>
           <p>Portal ERP Corporativo · v{APP_VERSION}</p>
         </div>

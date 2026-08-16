@@ -76,16 +76,7 @@ export default function Sidebar({
       {/* ── Logo & Brand ─────────────────────────────── */}
       <div className="sidebar-header">
         <div className="sidebar-logo" onClick={() => onViewChange('dashboard')} title="Lanxa ERP">
-          <svg viewBox="0 0 40 40" width={34} height={34} aria-label="Lanxa" style={{ display: 'block' }}>
-            <defs>
-              <linearGradient id="lanxa-sb" x1="0" y1="1" x2="1" y2="0">
-                <stop offset="0" stopColor="#7c5cff" />
-                <stop offset="1" stopColor="#1fe6cd" />
-              </linearGradient>
-            </defs>
-            <path d="M9 31 L21 7 L26 7 L14 31 Z" fill="url(#lanxa-sb)" />
-            <path d="M18 31 L30 7 L35 7 L23 31 Z" fill="url(#lanxa-sb)" opacity={0.55} />
-          </svg>
+          <img src="/favicon.svg" width={34} height={34} alt="Lanxa" style={{ display: 'block' }} />
         </div>
         {!collapsed && (
           <div className="sidebar-brand">
