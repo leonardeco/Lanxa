@@ -1,7 +1,7 @@
 # Lanxa ERP
 
-[![CI](https://github.com/leonardeco/Lanxa-ERP/actions/workflows/ci.yml/badge.svg)](https://github.com/leonardeco/Lanxa-ERP/actions/workflows/ci.yml)
-[![Versión](https://img.shields.io/badge/version-0.3.0-6c47ff?style=flat)](https://github.com/leonardeco/Lanxa-ERP/releases)
+[![CI](https://github.com/leonardeco/Nexus-CRM/actions/workflows/ci.yml/badge.svg)](https://github.com/leonardeco/Nexus-CRM/actions/workflows/ci.yml)
+[![Versión](https://img.shields.io/badge/version-0.3.0-6c47ff?style=flat)](https://github.com/leonardeco/Nexus-CRM/releases)
 [![Python](https://img.shields.io/badge/python-3.13-3776ab?logo=python&logoColor=white)](https://www.python.org/)
 [![Node](https://img.shields.io/badge/node-20%2B-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 [![Licencia](https://img.shields.io/badge/licencia-privado%20%2F%20propietario-lightgrey)](LICENSE)
@@ -73,7 +73,7 @@
 ### Estructura de carpetas
 
 ```
-Lanxa-ERP/
+Nexus-CRM/
 ├── backend/                    # FastAPI — API REST async
 │   ├── app/
 │   │   ├── api/                # Dependencias compartidas (auth, sesión DB)
@@ -221,8 +221,8 @@ frontend/src/
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/leonardeco/Lanxa-ERP.git
-cd Lanxa-ERP
+git clone https://github.com/leonardeco/Nexus-CRM.git
+cd Nexus-CRM
 ```
 
 ### 2. Configurar variables de entorno
