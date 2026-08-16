@@ -5,7 +5,7 @@ para HTTPS interno en la LAN. Uvicorn y Vite lo usan desde certs/.
 Uso: venv\\Scripts\\python.exe scripts\\generate_tls_cert.py [host ...]
 Sin argumentos, usa el host de frontend\\.env (VITE_API_URL) + localhost/127.0.0.1.
 
-La CA (certs\\superozono-ca.crt) hay que instalarla como confiable en cada PC
+La CA (certs\\lanxa-ca.crt) hay que instalarla como confiable en cada PC
 que vaya a usar el ERP (ver DOCUMENTACION.md, sección HTTPS). El certificado
 de servidor se puede regenerar sin tocar los PCs clientes, mientras la CA no
 cambie.
@@ -23,8 +23,8 @@ from cryptography.x509.oid import ExtendedKeyUsageOID, NameOID
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 CERTS_DIR = REPO_ROOT / "certs"
-CA_KEY = CERTS_DIR / "superozono-ca.key"
-CA_CERT = CERTS_DIR / "superozono-ca.crt"
+CA_KEY = CERTS_DIR / "lanxa-ca.key"
+CA_CERT = CERTS_DIR / "lanxa-ca.crt"
 SERVER_KEY = CERTS_DIR / "server.key"
 SERVER_CERT = CERTS_DIR / "server.crt"
 
@@ -49,8 +49,8 @@ def _san_entry(host: str):
 def _generate_ca():
     key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
     name = x509.Name([
-        x509.NameAttribute(NameOID.COMMON_NAME, "Super Ozono ERP - CA Local"),
-        x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Super Ozono Global"),
+        x509.NameAttribute(NameOID.COMMON_NAME, "Lanxa ERP - CA Local"),
+        x509.NameAttribute(NameOID.ORGANIZATION_NAME, "LANXA S.A.S."),
     ])
     now = datetime.now(timezone.utc)
     cert = (
@@ -79,7 +79,7 @@ def _generate_server_cert(ca_key, ca_cert, hosts: list[str]):
     key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
     subject = x509.Name([
         x509.NameAttribute(NameOID.COMMON_NAME, hosts[0]),
-        x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Super Ozono Global"),
+        x509.NameAttribute(NameOID.ORGANIZATION_NAME, "LANXA S.A.S."),
     ])
     now = datetime.now(timezone.utc)
     cert = (

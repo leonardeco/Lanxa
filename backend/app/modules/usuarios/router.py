@@ -44,7 +44,7 @@ def _set_refresh_cookie(response: Response, raw_token: str) -> None:
 # ── Auth ─────────────────────────────────────────────────
 
 @router.post("/login/access-token", response_model=Token)
-@limiter.limit("5/minute")
+@limiter.limit("30/minute")
 async def login_access_token(
     request: Request, response: Response, session: SessionDep,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
