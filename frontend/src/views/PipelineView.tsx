@@ -34,7 +34,7 @@ export default function PipelineView() {
     Promise.all([pipelineApi.listar(), ventasApi.getClientes()])
       .then(([n, c]) => {
         setNegocios(n.data);
-        setClientes(c.data.filter((x) => x.activo));
+        setClientes(c.data);
       })
       .catch(() => setError('No se pudo cargar el pipeline'))
       .finally(() => setLoading(false));
@@ -86,7 +86,7 @@ export default function PipelineView() {
         </button>
       </div>
 
-      <div className="kanban-board" role="list">
+      <div className="kanban-board" role="region" aria-label="Tablero de pipeline">
         {ETAPAS_PIPELINE.map((etapa) => {
           const cards = negocios.filter((n) => n.etapa === etapa);
           const total = cards.reduce((s, n) => s + Number(n.valor_estimado || 0), 0);
@@ -94,12 +94,13 @@ export default function PipelineView() {
             <section
               key={etapa}
               className="kanban-col"
+              role="list"
               aria-label={`${etapa}, ${cards.length} negocios`}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
                 e.preventDefault();
                 const id = Number(e.dataTransfer.getData('text/plain') || dragId);
-                if (id) void mover(id, etapa);
+                if (id && negocios.some((n) => n.id === id)) void mover(id, etapa);
                 setDragId(null);
               }}
             >
@@ -114,15 +115,22 @@ export default function PipelineView() {
                 <article
                   key={n.id}
                   className="kanban-card"
+                  role="listitem"
                   draggable
                   onDragStart={(e) => {
+                    const t = e.target as HTMLElement;
+                    if (t.closest('select,button,label,input,textarea')) {
+                      e.preventDefault();
+                      return;
+                    }
                     setDragId(n.id);
                     e.dataTransfer.setData('text/plain', String(n.id));
                     e.dataTransfer.effectAllowed = 'move';
                   }}
+                  onDragEnd={() => setDragId(null)}
                 >
                   <div className="kanban-card-num">{n.numero}</div>
-                  <div className="kanban-card-title">{n.titulo}</div>
+                  <h3 className="kanban-card-title">{n.titulo}</h3>
                   <div className="kanban-card-client">{n.cliente_razon_social || '—'}</div>
                   <div className="kanban-card-val">{cop(Number(n.valor_estimado))}</div>
                   <label className="kanban-card-stage">
@@ -189,7 +197,12 @@ function NegocioFormModal({
   const [notas, setNotas] = useState(negocio?.notas || '');
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState('');
-  const dirty = titulo !== (negocio?.titulo || '') || clienteId !== (negocio?.cliente_id?.toString() || '');
+  const dirty =
+    titulo !== (negocio?.titulo || '') ||
+    clienteId !== (negocio?.cliente_id?.toString() || '') ||
+    valor !== (negocio ? String(negocio.valor_estimado) : '') ||
+    fecha !== (negocio?.fecha_cierre || '') ||
+    notas !== (negocio?.notas || '');
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -230,8 +243,8 @@ function NegocioFormModal({
           <label className="form-label" htmlFor="ng-cli">Cliente *</label>
           <select id="ng-cli" className="form-input" value={clienteId} onChange={(e) => setClienteId(e.target.value)} required>
             <option value="">Selecciona un cliente</option>
-            {clientes.map((c) => (
-              <option key={c.id} value={c.id}>{c.razon_social}</option>
+            {clientes.filter((c) => c.activo || c.id === negocio?.cliente_id).map((c) => (
+              <option key={c.id} value={c.id}>{c.razon_social}{c.activo ? '' : ' (inactivo)'}</option>
             ))}
           </select>
         </div>
@@ -249,7 +262,7 @@ function NegocioFormModal({
           <label className="form-label" htmlFor="ng-not">Notas</label>
           <textarea id="ng-not" className="form-input" rows={3} value={notas} onChange={(e) => setNotas(e.target.value)} maxLength={2000} />
         </div>
-        {err && <div className="form-error">{err}</div>}
+        {err && <div className="form-error" role="alert">{err}</div>}
         <div className="form-actions">
           <button type="button" className="btn-secondary" onClick={onClose} disabled={saving}>Cancelar</button>
           <button type="submit" className="btn-primary" disabled={saving}>{saving ? 'Guardando…' : 'Guardar'}</button>
