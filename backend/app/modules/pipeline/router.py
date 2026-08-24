@@ -10,7 +10,7 @@ from app.api.deps import CurrentUser, SessionDep
 from app.core.numbering import next_sequential_numero
 from app.core.tenancy import get_for_tenant, tenant_clause
 from app.core.time import utcnow
-from app.modules.auditoria.service import registrar_auditoria
+from app.modules.auditoria.service import diff_cambios, registrar_auditoria
 from app.modules.pipeline.models import ETAPAS_PIPELINE, Negocio
 from app.modules.pipeline.schemas import (
     NegocioCreate,
@@ -106,7 +106,7 @@ async def crear_negocio(payload: NegocioCreate, db: SessionDep, user: CurrentUse
     db.add(n)
     await db.flush()
     registrar_auditoria(
-        db, user, "crear", "negocio", n.id, f"Negocio {n.numero} — {n.titulo}"
+        db, user, "Crear", "Negocio", n.id, f"Negocio {n.numero} — {n.titulo}"
     )
     await db.commit()
     await db.refresh(n)
@@ -139,11 +139,14 @@ async def actualizar_negocio(
     )
     if "titulo" in data and data["titulo"] is not None:
         data["titulo"] = data["titulo"].strip()
+        if not data["titulo"]:
+            raise HTTPException(status_code=400, detail="El título es obligatorio")
+    cambios = diff_cambios(n, data)
     for k, v in data.items():
         setattr(n, k, v)
     n.updated_at = utcnow()
     registrar_auditoria(
-        db, user, "editar", "negocio", n.id, f"Negocio {n.numero} actualizado", data
+        db, user, "Actualizar", "Negocio", n.id, f"Negocio {n.numero} actualizado", cambios
     )
     await db.commit()
     await db.refresh(n)
@@ -159,16 +162,17 @@ async def cambiar_etapa(
     if not n:
         raise HTTPException(status_code=404, detail="Negocio no encontrado")
     anterior = n.etapa
+    cambios = diff_cambios(n, {"etapa": payload.etapa})
     n.etapa = payload.etapa
     n.updated_at = utcnow()
     registrar_auditoria(
         db,
         user,
-        "editar",
-        "negocio",
+        "Actualizar",
+        "Negocio",
         n.id,
         f"Negocio {n.numero}: {anterior} → {payload.etapa}",
-        {"etapa": payload.etapa},
+        cambios,
     )
     await db.commit()
     await db.refresh(n)
@@ -182,7 +186,7 @@ async def eliminar_negocio(negocio_id: int, db: SessionDep, user: CurrentUser) -
     if not n:
         raise HTTPException(status_code=404, detail="Negocio no encontrado")
     registrar_auditoria(
-        db, user, "eliminar", "negocio", n.id, f"Negocio {n.numero} eliminado"
+        db, user, "Eliminar", "Negocio", n.id, f"Negocio {n.numero} eliminado"
     )
     await db.delete(n)
     await db.commit()

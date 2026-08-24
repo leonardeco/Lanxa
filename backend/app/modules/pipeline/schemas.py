@@ -46,6 +46,16 @@ class NegocioUpdate(BaseModel):
     venta_id: int | None = None
     notas: str | None = Field(default=None, max_length=2000)
 
+    @field_validator("titulo")
+    @classmethod
+    def titulo_no_vacio(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        t = v.strip()
+        if not t:
+            raise ValueError("El título es obligatorio")
+        return t
+
     @field_validator("etapa")
     @classmethod
     def etapa_valida(cls, v: str | None) -> str | None:
