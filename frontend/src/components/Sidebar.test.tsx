@@ -40,7 +40,7 @@ describe('Sidebar — gating por rol', () => {
         allowedViews={['dashboard', 'ventas', 'compras', 'cartera']}
       />,
     );
-    expect(screen.getByText('Ventas & Comercial')).toBeInTheDocument();
+    expect(screen.getByText('Ventas')).toBeInTheDocument();
     expect(screen.getByText('Cartera CxC & CxP')).toBeInTheDocument();
     expect(screen.queryByText('Usuarios & Accesos')).not.toBeInTheDocument();
     expect(screen.queryByText('Plan de Cuentas (PUC)')).not.toBeInTheDocument();
@@ -59,7 +59,7 @@ describe('Sidebar — gating por rol', () => {
         allowedViews={['dashboard', 'ventas']}
       />,
     );
-    await user.click(screen.getByText('Ventas & Comercial'));
+    await user.click(screen.getByText('Ventas'));
     expect(onViewChange).toHaveBeenCalledWith('ventas');
   });
 
@@ -86,11 +86,10 @@ describe('Sidebar — gating por rol', () => {
     render(
       <Sidebar {...baseProps} activeRole="Superusuario" allowedViews={['dashboard', 'ventas']} />,
     );
-    expect(screen.getByText('Ventas & Comercial')).toBeInTheDocument();
+    expect(screen.getByText('Ventas')).toBeInTheDocument();
 
     await user.click(screen.getByTitle('Colapsar menú'));
-    expect(screen.queryByText('Ventas & Comercial')).not.toBeInTheDocument();
-    // El botón sigue ahí, ahora identificado por title
-    expect(screen.getByTitle('Ventas & Comercial')).toBeInTheDocument();
+    expect(screen.queryByText('Ventas')).not.toBeInTheDocument();
+    expect(screen.getByTitle('Ventas')).toBeInTheDocument();
   });
 });

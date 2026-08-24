@@ -194,7 +194,7 @@ function ProductosStockTab() {
         )}
       </div>
       <p style={{ fontSize: 11, color: '#888', marginTop: 8 }}>
-        Para crear o editar productos, ve a <strong>Ventas & Comercial → Productos</strong>.
+        Para crear o editar productos, ve a <strong>Productos</strong> en el menú.
       </p>
     </div>
   );

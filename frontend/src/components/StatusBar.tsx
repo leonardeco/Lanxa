@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { APP_VERSION, healthUrl } from '../config'
+import { useEmpresa } from '../hooks/useEmpresa'
 
 interface StatusBarProps {
   role: string
@@ -10,6 +11,7 @@ export default function StatusBar({ role, userName }: StatusBarProps) {
   const [time, setTime] = useState(new Date())
   const [apiStatus, setApiStatus] = useState<'connected' | 'disconnected' | 'checking'>('checking')
   const [apiVersion, setApiVersion] = useState<string>(APP_VERSION)
+  const empresa = useEmpresa()
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000)
@@ -21,7 +23,6 @@ export default function StatusBar({ role, userName }: StatusBarProps) {
       try {
         const res = await fetch(healthUrl(), {
           // health es público; en LAN el cert puede ser la CA local
-          // el navegador ya confía si se instaló superozono-ca.crt
         })
         if (!res.ok) {
           setApiStatus('disconnected')
@@ -73,7 +74,7 @@ export default function StatusBar({ role, userName }: StatusBarProps) {
         <div className="status-bar-divider" />
         <div className="status-bar-item">
           <span className="status-bar-icon">🏢</span>
-          <span>LANXA S.A.S.</span>
+          <span>{empresa?.razon_social || 'Lanxa ERP'}</span>
         </div>
       </div>
       <div className="status-bar-right">

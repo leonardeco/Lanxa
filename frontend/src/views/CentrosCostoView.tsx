@@ -66,7 +66,7 @@ function CentroModal({ centro, onSave, onClose }: {
               </div>
               <div className="form-group">
                 <label className="form-label">Marca Asociada</label>
-                <input className="form-input" value={marca} onChange={e => setMarca(e.target.value)} placeholder="Ej: Superozono" />
+                <input className="form-input" value={marca} onChange={e => setMarca(e.target.value)} placeholder="Ej: línea o marca propia" />
               </div>
             </div>
             <div className="form-group">
@@ -197,7 +197,7 @@ export default function CentrosCostoView() {
               </tr>
             ))}
             {centros.length === 0 && (
-              <tr><td colSpan={canEdit ? 8 : 7} style={{ textAlign: 'center', color: 'var(--neutral-500)', padding: 32 }}>No hay centros de costo</td></tr>
+              <tr><td colSpan={canEdit ? 8 : 7} style={{ textAlign: 'center', color: 'var(--neutral-500)', padding: 32 }}>Sin centros de costo. Usa “+ Nuevo centro” para crear el primero.</td></tr>
             )}
           </tbody>
         </table>

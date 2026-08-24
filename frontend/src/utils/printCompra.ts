@@ -1,17 +1,12 @@
 import type { Compra } from '../services/comprasApi';
 import { esc } from './htmlEscape';
+import { letterheadBlock, resolveEmpresa, type EmpresaPrint } from './printEmpresa';
 
 const COP = (n: number | string) =>
   Number(n).toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
-const EMPRESA = {
-  nombre: 'LANXA S.A.S.',
-  nit: '',
-  ciudad: '',
-  email: 'admin@lanxa.local',
-};
-
-export function printCompra(compra: Compra) {
+export function printCompra(compra: Compra, empresa?: EmpresaPrint) {
+  const emp = resolveEmpresa(empresa);
   const fechaFmt = new Date(compra.fecha + 'T00:00:00').toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' });
 
   const filasDetalle = compra.detalles.map(d => `
@@ -84,10 +79,7 @@ export function printCompra(compra: Compra) {
 <div class="page">
   <div class="header">
     <div>
-      <div class="empresa-nombre">${EMPRESA.nombre}</div>
-      <div class="empresa-sub">NIT: ${EMPRESA.nit}</div>
-      <div class="empresa-sub">${EMPRESA.ciudad}</div>
-      <div class="empresa-sub">${EMPRESA.email}</div>
+      ${letterheadBlock(emp)}
     </div>
     <div class="doc-box">
       <div class="doc-tipo">Documento de Compra</div>
@@ -146,12 +138,12 @@ export function printCompra(compra: Compra) {
   ${compra.observaciones ? `<div class="seccion"><div class="seccion-titulo">Observaciones</div><div style="background:#f8f8f8;padding:8px 12px;font-size:10px;color:#555;border-radius:4px;">${esc(compra.observaciones)}</div></div>` : ''}
 
   <div class="firmas">
-    <div class="firma-linea">Autorizado por — ${EMPRESA.nombre}</div>
+    <div class="firma-linea">Autorizado por — ${esc(emp.nombre)}</div>
     <div class="firma-linea">Firma y Sello del Proveedor</div>
   </div>
 
   <div class="footer">
-    ${EMPRESA.nombre} · NIT ${EMPRESA.nit} · Generado el ${new Date().toLocaleString('es-CO')}
+    ${esc(emp.nombre)}${emp.nit ? ` · NIT ${esc(emp.nit)}` : ''} · Generado el ${new Date().toLocaleString('es-CO')}
   </div>
 </div>
 <script>window.onload = function() { window.print(); }</script>

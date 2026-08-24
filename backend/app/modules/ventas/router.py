@@ -16,7 +16,7 @@ from app.core.database import get_db
 from app.core.config import get_settings
 from app.core.money import redondear_cop
 from app.core.numbering import next_sequential_numero
-from app.core.tenancy import for_tenant, get_for_tenant, tenant_clause
+from app.core.tenancy import Tenant, for_tenant, get_for_tenant, get_tenant_id, tenant_clause
 from app.api.deps import CurrentUser, AdminOrAdministradoraDep, ContableDep
 from app.modules.ventas.models import (
     Producto, Cliente, VentaDocumento, VentaDetalle,
@@ -26,7 +26,7 @@ from app.modules.ventas.models import (
 )
 from app.modules.ventas.schemas import (
     ProductoCreate, ProductoUpdate, ProductoResponse,
-    ClienteCreate, ClienteUpdate, ClienteResponse, EmpresaInfoResponse,
+    ClienteCreate, ClienteUpdate, ClienteResponse, EmpresaInfoResponse, EmpresaUpdate,
     VentaCreate, VentaResponse, VentaDetalleCreate, VentaDetalleResponse,
     CotizacionCreate, CotizacionRechazo, CotizacionResponse,
     VentaDashboardStats,
@@ -454,14 +454,16 @@ def _aplicar_habeas_data_fecha(cliente: Cliente, aceptado: bool | None) -> None:
         cliente.habeas_data_fecha = None
 
 
-@router.get("/empresa", response_model=EmpresaInfoResponse)
-async def get_empresa_info(_current: CurrentUser):
-    """Datos de empresa + resolución DIAN (#22) y texto Habeas Data (#23) para UI/impresión."""
+def _empresa_desde_tenant_y_env(tenant: Tenant | None) -> EmpresaInfoResponse:
     s = get_settings()
     return EmpresaInfoResponse(
-        nit=s.EMPRESA_NIT,
-        razon_social=s.EMPRESA_RAZON_SOCIAL,
-        ciudad=s.EMPRESA_CIUDAD,
+        nit=(tenant.nit if tenant and tenant.nit else None) or s.EMPRESA_NIT or "",
+        razon_social=(
+            (tenant.razon_social if tenant and tenant.razon_social else None)
+            or s.EMPRESA_RAZON_SOCIAL
+            or "LANXA S.A.S."
+        ),
+        ciudad=(tenant.ciudad if tenant and tenant.ciudad else None) or s.EMPRESA_CIUDAD or "",
         dian_resolucion_numero=s.DIAN_RESOLUCION_NUMERO or "",
         dian_resolucion_fecha=s.DIAN_RESOLUCION_FECHA or "",
         dian_prefijo=s.DIAN_PREFIJO or "",
@@ -470,6 +472,30 @@ async def get_empresa_info(_current: CurrentUser):
         dian_vigencia_hasta=s.DIAN_VIGENCIA_HASTA or "",
         habeas_data_texto=s.HABEAS_DATA_TEXTO or "",
     )
+
+
+@router.get("/empresa", response_model=EmpresaInfoResponse)
+async def get_empresa_info(_current: CurrentUser, db: AsyncSession = Depends(get_db)):
+    """Datos de empresa del tenant (UI / impresión). Fallback a .env si el tenant no tiene valor."""
+    tenant = await db.get(Tenant, get_tenant_id())
+    return _empresa_desde_tenant_y_env(tenant)
+
+
+@router.put("/empresa", response_model=EmpresaInfoResponse)
+async def update_empresa_info(
+    data: EmpresaUpdate,
+    _current: AdminOrAdministradoraDep,
+    db: AsyncSession = Depends(get_db),
+):
+    """Superusuario/Directora: NIT, razón social y ciudad de esta empresa (tenant)."""
+    tenant = await db.get(Tenant, get_tenant_id())
+    if tenant is None:
+        raise HTTPException(status_code=404, detail="No hay empresa asociada a esta sesión")
+    tenant.nit = (data.nit or "").strip() or None
+    tenant.razon_social = data.razon_social.strip()
+    tenant.ciudad = (data.ciudad or "").strip() or None
+    await db.flush()
+    return _empresa_desde_tenant_y_env(tenant)
 
 
 @router.post("/clientes", response_model=ClienteResponse, status_code=201)

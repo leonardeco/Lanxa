@@ -1,17 +1,12 @@
 import type { CxC, CxP, Pago } from '../services/carteraApi';
 import { esc } from './htmlEscape';
+import { letterheadBlock, resolveEmpresa, type EmpresaPrint } from './printEmpresa';
 
 const COP = (n: number | string) =>
   Number(n).toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
-const EMPRESA = {
-  nombre: 'LANXA S.A.S.',
-  nit: '',
-  ciudad: '',
-  email: 'admin@lanxa.local',
-};
-
-export function printComprobante(tipo: 'CxC' | 'CxP', documento: CxC | CxP, pago: Pago) {
+export function printComprobante(tipo: 'CxC' | 'CxP', documento: CxC | CxP, pago: Pago, empresa?: EmpresaPrint) {
+  const emp = resolveEmpresa(empresa);
   const esCxC = tipo === 'CxC';
   const docTitulo = esCxC ? 'Recibo de Caja' : 'Comprobante de Egreso';
 
@@ -68,10 +63,7 @@ export function printComprobante(tipo: 'CxC' | 'CxP', documento: CxC | CxP, pago
 <div class="page">
   <div class="header">
     <div>
-      <div class="empresa-nombre">${EMPRESA.nombre}</div>
-      <div class="empresa-sub">NIT: ${EMPRESA.nit}</div>
-      <div class="empresa-sub">${EMPRESA.ciudad}</div>
-      <div class="empresa-sub">${EMPRESA.email}</div>
+      ${letterheadBlock(emp)}
     </div>
     <div class="doc-box">
       <div class="doc-tipo">${docTitulo}</div>
@@ -115,12 +107,12 @@ export function printComprobante(tipo: 'CxC' | 'CxP', documento: CxC | CxP, pago
   ${pago.notas ? `<div class="seccion"><div class="seccion-titulo">Notas / Referencia de pago</div><div style="background:#f8f8f8;padding:8px 12px;font-size:10px;color:#555;border-radius:4px;">${esc(pago.notas)}</div></div>` : ''}
 
   <div class="firmas">
-    <div class="firma-linea">${esCxC ? `Recibido por — ${EMPRESA.nombre}` : 'Firma de quien autoriza el pago'}</div>
+    <div class="firma-linea">${esCxC ? `Recibido por — ${esc(emp.nombre)}` : 'Firma de quien autoriza el pago'}</div>
     <div class="firma-linea">${esCxC ? 'Firma de quien entrega' : `Recibido por — ${esc(terceroNombre ?? '')}`}</div>
   </div>
 
   <div class="footer">
-    ${EMPRESA.nombre} · NIT ${EMPRESA.nit} · Generado el ${new Date().toLocaleString('es-CO')}
+    ${esc(emp.nombre)}${emp.nit ? ` · NIT ${esc(emp.nit)}` : ''} · Generado el ${new Date().toLocaleString('es-CO')}
   </div>
 </div>
 <script>window.onload = function() { window.print(); }</script>

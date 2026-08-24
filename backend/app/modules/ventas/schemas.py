@@ -174,6 +174,12 @@ class EmpresaInfoResponse(BaseModel):
     habeas_data_texto: str = ""
 
 
+class EmpresaUpdate(BaseModel):
+    nit: str = Field(default="", max_length=30)
+    razon_social: str = Field(..., min_length=2, max_length=200)
+    ciudad: str = Field(default="", max_length=100)
+
+
 # ══════════════════════════════════════════════════════════
 # Ventas — Detalles
 # ══════════════════════════════════════════════════════════

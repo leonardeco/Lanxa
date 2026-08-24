@@ -72,21 +72,8 @@ PLAN_CUENTAS_DATA = [
     ("6225", "Devoluciones en compras (CR)", "Costo", "Crédito", "Auxiliar", True, True),
 ]
 
-CENTROS_COSTO_DATA = [
-    # (código, nombre, tipo, marca_asociada, activo, notas)
-    ("CC-01", "Superozono", "Marca", "Superozono", True, None),
-    ("CC-02", "Biozono", "Marca", "Biozono", True, "⚠️ Pendiente confirmar con la empresa"),
-    ("CC-03", "Ecoozono", "Marca", "Ecoozono", True, None),
-    ("CC-04", "Agroking", "Marca", "Agroking", True, None),
-    ("CC-05", "Ozono Evolution", "Marca", "Ozono Evolution", True, None),
-    ("CC-06", "Agro Vital", "Marca", "Agro Vital", True, None),
-    ("CC-07", "Agro Fusion", "Marca", "Agro Fusion", True, None),
-    ("CC-08", "Hiper Ozono", "Marca", "Hiper Ozono", True, None),
-    ("CC-09", "Ozono Pro", "Marca", "Ozono Pro", True, None),
-    ("CC-10", "Ozomax", "Marca", "Ozomax", True, None),
-    ("CC-ADM", "Administración", "Área", None, True, None),
-    ("CC-LOG", "Logística y bodega", "Área", None, True, None),
-]
+# Vacío a propósito: cada empresa crea sus centros desde la UI.
+CENTROS_COSTO_DATA: list[tuple] = []
 
 PERIODOS_DATA = [
     (2026, i, f"2026-{i:02d}", "Abierto") for i in range(1, 13)
@@ -186,10 +173,13 @@ async def seed_plan_cuentas(session):
 
 
 async def seed_centros_costo(session):
-    """Carga los centros de costo (10 marcas + 2 áreas)."""
+    """Carga centros de costo semilla (ninguno: se crean en la UI)."""
     existing = await session.scalar(select(CentroCosto.id).limit(1))
     if existing:
         logger.info("[SKIP] Centros de costo ya tienen datos, omitiendo seed")
+        return
+    if not CENTROS_COSTO_DATA:
+        logger.info("[SKIP] Sin centros semilla — se crean desde la UI")
         return
 
     for codigo, nombre, tipo, marca, activo, notas in CENTROS_COSTO_DATA:
@@ -287,6 +277,7 @@ async def seed_tenant(session):
         codigo="lanxa",
         razon_social=settings.EMPRESA_RAZON_SOCIAL or "LANXA S.A.S.",
         nit=settings.EMPRESA_NIT or None,
+        ciudad=settings.EMPRESA_CIUDAD or None,
         dominio=dominio,
         activo=True,
         notas="Tenant por defecto — despliegue LAN v0.3.x",

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { carteraApi, type CxC, type CxP, type CarteraStats, type Pago } from '../services/carteraApi';
 import { printComprobante } from '../utils/printComprobante';
+import { useEmpresa, empresaToPrint } from '../hooks/useEmpresa';
 import Toast from '../components/Toast';
 import Modal from '../components/Modal';
 import ErrorState from '../components/ErrorState';
@@ -85,6 +86,7 @@ function PagosHistorialModal({ tipo, documento, onClose, onChanged }: {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [anulando, setAnulando] = useState<number | null>(null);
+  const empresa = useEmpresa();
 
   const cargar = () => {
     const params = tipo === 'cxc' ? { cxc_id: documento.id } : { cxp_id: documento.id };
@@ -145,7 +147,7 @@ function PagosHistorialModal({ tipo, documento, onClose, onChanged }: {
                 <td>{formatCOP(p.saldo_nuevo)}</td>
                 <td style={{ whiteSpace: 'nowrap' }}>
                   <button className="btn btn-ghost" style={{ fontSize: '0.75rem', padding: '3px 8px' }}
-                    onClick={() => printComprobante(tipo === 'cxc' ? 'CxC' : 'CxP', documento, p)}>
+                    onClick={() => printComprobante(tipo === 'cxc' ? 'CxC' : 'CxP', documento, p, empresaToPrint(empresa))}>
                     🖨️
                   </button>
                   {!p.anulado && (
@@ -192,7 +194,7 @@ function CxCFormModal({ onSave, onClose }: { onSave: (d: any) => Promise<void>; 
           <div className="form-group"><label className="form-label">Fecha emisión *</label><input className="form-input" type="date" value={form.fecha_emision} onChange={e => set('fecha_emision', e.target.value)} required /></div>
           <div className="form-group"><label className="form-label">NIT Cliente *</label><input className="form-input" value={form.cliente_nit} onChange={e => set('cliente_nit', e.target.value)} required /></div>
           <div className="form-group"><label className="form-label">Nombre Cliente *</label><input className="form-input" value={form.nombre_cliente} onChange={e => set('nombre_cliente', e.target.value)} required /></div>
-          <div className="form-group"><label className="form-label">Marca</label><input className="form-input" value={form.marca} onChange={e => set('marca', e.target.value)} placeholder="Superozono, Ecoozono..." /></div>
+          <div className="form-group"><label className="form-label">Marca</label><input className="form-input" value={form.marca} onChange={e => set('marca', e.target.value)} placeholder="Marca (opcional)" /></div>
           <div className="form-group"><label className="form-label">Valor factura *</label><input className="form-input" type="number" step="0.01" value={form.valor_factura} onChange={e => set('valor_factura', e.target.value)} required /></div>
           <div className="form-group"><label className="form-label">Fecha vencimiento</label><input className="form-input" type="date" value={form.fecha_vencimiento} onChange={e => set('fecha_vencimiento', e.target.value)} /></div>
         </div>
@@ -253,6 +255,7 @@ function CxPFormModal({ onSave, onClose }: { onSave: (d: any) => Promise<void>; 
 type Tab = 'cxc' | 'cxp';
 
 export default function CarteraView() {
+  const empresa = useEmpresa();
   const [tab, setTab] = useState<Tab>('cxc');
   const [stats, setStats] = useState<CarteraStats | null>(null);
   const [cxcList, setCxcList] = useState<CxC[]>([]);
@@ -295,7 +298,7 @@ export default function CarteraView() {
       ? await carteraApi.abonarCxC(abonoTarget.id, valor, notas)
       : await carteraApi.abonarCxP(abonoTarget.id, valor, notas);
     showToast('Abono registrado'); setAbonoTarget(null); load();
-    printComprobante(abonoTarget.tipo === 'cxc' ? 'CxC' : 'CxP', result.documento, result.pago);
+    printComprobante(abonoTarget.tipo === 'cxc' ? 'CxC' : 'CxP', result.documento, result.pago, empresaToPrint(empresa));
   };
   const handleAnular = async (id: number, tipo: Tab) => {
     if (!confirm('¿Anular este documento?')) return;

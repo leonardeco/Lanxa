@@ -1,15 +1,9 @@
 import type { Venta } from '../services/ventasApi';
 import { esc } from './htmlEscape';
+import { letterheadBlock, resolveEmpresa, type EmpresaPrint } from './printEmpresa';
 
 const COP = (n: number | string) =>
   Number(n).toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-
-const EMPRESA = {
-  nombre: 'LANXA S.A.S.',
-  nit: '',
-  ciudad: '',
-  email: 'admin@lanxa.local',
-};
 
 /** Resolución de numeración DIAN (#22) — opcional hasta autorización real. */
 export interface DianResolucionPrint {
@@ -24,6 +18,7 @@ export interface DianResolucionPrint {
 export interface PrintFacturaOptions {
   dian?: DianResolucionPrint;
   habeasDataTexto?: string;
+  empresa?: EmpresaPrint;
 }
 
 function bloqueDian(dian?: DianResolucionPrint): string {
@@ -44,6 +39,7 @@ function bloqueDian(dian?: DianResolucionPrint): string {
 }
 
 export function printFactura(venta: Venta, options: PrintFacturaOptions = {}) {
+  const emp = resolveEmpresa(options.empresa);
   const fechaFmt = new Date(venta.fecha + 'T00:00:00').toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' });
   const dianHtml = bloqueDian(options.dian);
   const habeas = options.habeasDataTexto?.trim()
@@ -140,10 +136,7 @@ export function printFactura(venta: Venta, options: PrintFacturaOptions = {}) {
   <!-- Encabezado -->
   <div class="header">
     <div>
-      <div class="empresa-nombre">${EMPRESA.nombre}</div>
-      <div class="empresa-sub">NIT: ${EMPRESA.nit}</div>
-      <div class="empresa-sub">${EMPRESA.ciudad}</div>
-      <div class="empresa-sub">${EMPRESA.email}</div>
+      ${letterheadBlock(emp)}
     </div>
     <div class="doc-box">
       <div class="doc-tipo">Documento de Venta</div>
@@ -209,12 +202,12 @@ export function printFactura(venta: Venta, options: PrintFacturaOptions = {}) {
 
   <!-- Firmas -->
   <div class="firmas">
-    <div class="firma-linea">Firma Autorizada — ${EMPRESA.nombre}</div>
+    <div class="firma-linea">Firma Autorizada — ${esc(emp.nombre)}</div>
     <div class="firma-linea">Firma y Sello del Cliente</div>
   </div>
 
   <div class="footer">
-    ${EMPRESA.nombre} · NIT ${EMPRESA.nit} · ${EMPRESA.ciudad}
+    ${esc(emp.nombre)}${emp.nit ? ` · NIT ${esc(emp.nit)}` : ''}${emp.ciudad ? ` · ${esc(emp.ciudad)}` : ''}
     &nbsp;·&nbsp; Documento generado el ${new Date().toLocaleString('es-CO')}
     ${habeas}
   </div>

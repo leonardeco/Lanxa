@@ -21,7 +21,7 @@ const NAV_SECTIONS = [
     title: 'Contabilidad',
     items: [
       { id: 'puc' as ViewId, icon: '📋', label: 'Plan de Cuentas (PUC)', badge: '34' },
-      { id: 'centros-costo' as ViewId, icon: '🏷️', label: 'Centros de Costo', badge: '12' },
+      { id: 'centros-costo' as ViewId, icon: '🏷️', label: 'Centros de Costo' },
       { id: 'periodos' as ViewId, icon: '📅', label: 'Períodos Contables' },
       { id: 'tributarios' as ViewId, icon: '🏛️', label: 'Params. Tributarios' },
       { id: 'nomina' as ViewId, icon: '💰', label: 'Params. Nómina' },
@@ -30,11 +30,11 @@ const NAV_SECTIONS = [
   {
     title: 'Operaciones',
     items: [
-      { id: 'ventas' as ViewId, icon: '🛒', label: 'Ventas & Comercial' },
-      { id: 'ventas-diarias-colombia' as ViewId, icon: '📦', label: '🇨🇴 Ventas Colombia' },
-      { id: 'ventas-diarias' as ViewId, icon: '📦', label: '🇵🇪 Ventas Perú' },
-      { id: 'ventas-diarias-ecuador' as ViewId, icon: '📦', label: '🇪🇨 Ventas Ecuador' },
-      { id: 'compras' as ViewId, icon: '📥', label: 'Compras & Proveedores' },
+      { id: 'contactos' as ViewId, icon: '👥', label: 'Contactos' },
+      { id: 'productos' as ViewId, icon: '📦', label: 'Productos' },
+      { id: 'cotizaciones' as ViewId, icon: '📋', label: 'Cotizaciones' },
+      { id: 'ventas' as ViewId, icon: '🧾', label: 'Ventas' },
+      { id: 'compras' as ViewId, icon: '📥', label: 'Compras' },
       { id: 'cartera' as ViewId, icon: '💰', label: 'Cartera CxC & CxP' },
       { id: 'inventario' as ViewId, icon: '📦', label: 'Inventario' },
       // RRHH y Plataformas (🚧 Fase 2+) salen del menú hasta que existan;
@@ -46,6 +46,7 @@ const NAV_SECTIONS = [
     title: 'Administración',
     items: [
       { id: 'usuarios' as ViewId, icon: '⚙️', label: 'Usuarios & Accesos' },
+      { id: 'empresa' as ViewId, icon: '🏢', label: 'Ajustes de empresa' },
     ],
   },
 ]

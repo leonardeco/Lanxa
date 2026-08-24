@@ -158,6 +158,8 @@ export interface VentaInput {
 export const ventasApi = {
   getDashboard: () => api.get<VentaDashboard>(`${BASE}/dashboard`),
   getEmpresa: () => api.get<EmpresaInfo>(`${BASE}/empresa`),
+  updateEmpresa: (data: Pick<EmpresaInfo, 'nit' | 'razon_social' | 'ciudad'>) =>
+    api.put<EmpresaInfo>(`${BASE}/empresa`, data),
 
   // ── Productos ──
   getProductos: (marca?: string) => {

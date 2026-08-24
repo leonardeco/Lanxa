@@ -28,16 +28,14 @@ test('login correcto entra al Dashboard con el menú de Superusuario', async ({ 
   await login(page);
   await expect(page.getByRole('heading', { name: 'Dashboard General' })).toBeVisible();
   // Menú Superusuario: módulos operativos y administración de usuarios
-  await expect(page.getByText('Ventas & Comercial')).toBeVisible();
+  await expect(page.getByText('Ventas')).toBeVisible();
   await expect(page.getByText('Reportes & BI')).toBeVisible();
   await expect(page.getByText('Usuarios & Accesos')).toBeVisible();
 });
 
 test('navegar a Ventas muestra el catálogo con búsqueda', async ({ page }) => {
   await login(page);
-  await page.getByText('Ventas & Comercial').click();
-  // El módulo abre en su dashboard: pasar a la pestaña Productos
-  await page.getByRole('button', { name: /📦 Productos/ }).click();
+  await page.locator('#nav-productos').click();
   await expect(page.getByText('Catálogo de Productos')).toBeVisible({ timeout: 10_000 });
   await expect(page.getByPlaceholder('Buscar por SKU, nombre o marca…')).toBeVisible();
 });

@@ -1,17 +1,12 @@
 import type { Cotizacion } from '../services/ventasApi';
 import { esc } from './htmlEscape';
+import { letterheadBlock, resolveEmpresa, type EmpresaPrint } from './printEmpresa';
 
 const COP = (n: number | string) =>
   Number(n).toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
-const EMPRESA = {
-  nombre: 'LANXA S.A.S.',
-  nit: '',
-  ciudad: '',
-  email: 'admin@lanxa.local',
-};
-
-export function printCotizacion(cot: Cotizacion) {
+export function printCotizacion(cot: Cotizacion, empresa?: EmpresaPrint) {
+  const emp = resolveEmpresa(empresa);
   const fmt = (f: string) => new Date(f + 'T00:00:00').toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' });
 
   const filasDetalle = cot.detalles.map(d => `
@@ -86,10 +81,7 @@ export function printCotizacion(cot: Cotizacion) {
 
   <div class="header">
     <div>
-      <div class="empresa-nombre">${EMPRESA.nombre}</div>
-      <div class="empresa-sub">NIT: ${EMPRESA.nit}</div>
-      <div class="empresa-sub">${EMPRESA.ciudad}</div>
-      <div class="empresa-sub">${EMPRESA.email}</div>
+      ${letterheadBlock(emp)}
     </div>
     <div class="doc-box">
       <div class="doc-tipo">Cotización</div>
@@ -155,13 +147,13 @@ export function printCotizacion(cot: Cotizacion) {
   ${cot.observaciones ? `<div class="seccion"><div class="seccion-titulo">Observaciones</div><div class="obs">${esc(cot.observaciones)}</div></div>` : ''}
 
   <div class="firmas">
-    <div class="firma-linea">Elaborada por — ${EMPRESA.nombre}</div>
+    <div class="firma-linea">Elaborada por — ${esc(emp.nombre)}</div>
     <div class="firma-linea">Aceptación del Cliente (firma y fecha)</div>
   </div>
 
   <div class="footer">
     Este documento es una cotización comercial y no constituye factura de venta.
-    <br>${EMPRESA.nombre} · NIT ${EMPRESA.nit} · ${EMPRESA.ciudad}
+    <br>${esc(emp.nombre)}${emp.nit ? ` · NIT ${esc(emp.nit)}` : ''}${emp.ciudad ? ` · ${esc(emp.ciudad)}` : ''}
     &nbsp;·&nbsp; Documento generado el ${new Date().toLocaleString('es-CO')}
   </div>
 

@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar'
 import HeaderBar from './components/HeaderBar'
 import StatusBar from './components/StatusBar'
 import ErrorBoundary from './components/ErrorBoundary'
+import CommandPalette from './components/CommandPalette'
 import DashboardView from './views/DashboardView'
 import LoginView from './views/LoginView'
 import { useAuth } from './contexts/auth'
@@ -17,12 +18,13 @@ const PeriodosView = lazy(() => import('./views/PeriodosView'))
 const TributariosView = lazy(() => import('./views/TributariosView'))
 const NominaView = lazy(() => import('./views/NominaView'))
 const VentasView = lazy(() => import('./views/VentasView'))
-const VentasDiariasView = lazy(() => import('./views/VentasDiariasView'))
 const UsuariosView = lazy(() => import('./views/UsuariosView'))
 const CarteraView = lazy(() => import('./views/CarteraView'))
 const ComprasView = lazy(() => import('./views/ComprasView'))
 const InventarioView = lazy(() => import('./views/InventarioView'))
 const ReportesView = lazy(() => import('./views/ReportesView'))
+const EmpresaAjustesView = lazy(() => import('./views/EmpresaAjustesView'))
+const ContactosView = lazy(() => import('./views/ContactosView'))
 
 export type ViewId =
   | 'dashboard'
@@ -34,14 +36,15 @@ export type ViewId =
   | 'cartera'
   | 'nomina'
   | 'ventas'
-  | 'ventas-diarias'
-  | 'ventas-diarias-colombia'
-  | 'ventas-diarias-ecuador'
+  | 'contactos'
+  | 'productos'
+  | 'cotizaciones'
   | 'compras'
   | 'inventario'
   | 'rrhh'
   | 'plataformas'
   | 'reportes'
+  | 'empresa'
 
 export type RolUsuario =
   | 'Superusuario'
@@ -57,47 +60,47 @@ const VIEW_TITLES: Record<ViewId, string> = {
   periodos: 'Períodos Contables',
   tributarios: 'Parámetros Tributarios',
   nomina: 'Parámetros de Nómina',
-  ventas: 'Ventas & Comercial',
-  'ventas-diarias': 'Ventas Diarias (Perú)',
-  'ventas-diarias-colombia': 'Ventas Diarias — Colombia 🇨🇴',
-  'ventas-diarias-ecuador': 'Ventas Diarias — Ecuador 🇪🇨',
-  compras: 'Compras & Proveedores',
+  ventas: 'Ventas',
+  contactos: 'Contactos',
+  productos: 'Productos',
+  cotizaciones: 'Cotizaciones',
+  compras: 'Compras',
   cartera: 'Cartera — CxC & CxP',
   inventario: 'Inventario & Logística',
   rrhh: 'Talento Humano',
   plataformas: 'Plataformas & Marketing',
   reportes: 'Reportes & BI',
   usuarios: 'Gestión de Usuarios',
+  empresa: 'Ajustes de empresa',
 }
 
 // Qué módulos puede ver cada rol
 const ROLE_VIEWS: Record<RolUsuario, ViewId[]> = {
   Superusuario: [
     'dashboard', 'puc', 'centros-costo', 'periodos', 'tributarios', 'nomina',
-    'ventas', 'ventas-diarias', 'ventas-diarias-colombia', 'ventas-diarias-ecuador',
-    'compras', 'cartera', 'inventario', 'rrhh', 'plataformas', 'reportes', 'usuarios',
+    'contactos', 'productos', 'cotizaciones', 'ventas',
+    'compras', 'cartera', 'inventario', 'rrhh', 'plataformas', 'reportes', 'usuarios', 'empresa',
   ],
-  // Dirección operativa (antes Administradora)
   Directora: [
     'dashboard', 'puc', 'centros-costo', 'periodos', 'tributarios', 'nomina',
-    'ventas', 'ventas-diarias', 'ventas-diarias-colombia', 'ventas-diarias-ecuador',
-    'compras', 'cartera', 'inventario', 'reportes',
+    'contactos', 'productos', 'cotizaciones', 'ventas',
+    'compras', 'cartera', 'inventario', 'reportes', 'empresa',
   ],
-  // CEO: dashboards, reportes y consulta de operación
-  CEO: ['dashboard', 'reportes', 'ventas', 'ventas-diarias', 'ventas-diarias-colombia', 'ventas-diarias-ecuador', 'compras', 'cartera', 'inventario'],
+  CEO: ['dashboard', 'reportes', 'contactos', 'productos', 'cotizaciones', 'ventas', 'compras', 'cartera', 'inventario'],
   Contador: [
     'dashboard', 'puc', 'centros-costo', 'periodos', 'tributarios',
-    'cartera', 'reportes', 'ventas', 'ventas-diarias', 'compras',
+    'cartera', 'reportes', 'contactos', 'productos', 'cotizaciones', 'ventas', 'compras',
   ],
   'Auxiliar Contable': [
     'dashboard', 'puc', 'centros-costo', 'periodos', 'tributarios',
-    'ventas', 'ventas-diarias', 'compras', 'cartera', 'reportes',
+    'contactos', 'productos', 'cotizaciones', 'ventas', 'compras', 'cartera', 'reportes',
   ],
 }
 
 function App() {
   const { user, logout, isLoading } = useAuth()
   const [activeView, setActiveView] = useState<ViewId>('dashboard')
+  const [searchOpen, setSearchOpen] = useState(false)
 
   // Efecto para redirigir si el rol no permite la vista actual
   useEffect(() => {
@@ -109,6 +112,18 @@ function App() {
       }
     }
   }, [user, activeView]);
+
+  useEffect(() => {
+    if (!user) return
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault()
+        setSearchOpen((open) => !open)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [user])
 
   if (isLoading) {
     return (
@@ -156,20 +171,22 @@ function App() {
         return <TributariosView />
       case 'nomina':
         return <NominaView />
+      case 'contactos':
+        return <ContactosView />
+      case 'productos':
+        return <VentasView key="productos" initialTab="productos" hideTabs />
+      case 'cotizaciones':
+        return <VentasView key="cotizaciones" initialTab="cotizaciones" hideTabs />
       case 'ventas':
-        return <VentasView />
-      case 'ventas-diarias':
-        return <VentasDiariasView defaultTenantId={2} />
-      case 'ventas-diarias-colombia':
-        return <VentasDiariasView defaultTenantId={1} />
-      case 'ventas-diarias-ecuador':
-        return <VentasDiariasView defaultTenantId={3} />
+        return <VentasView key="ventas" initialTab="facturas" hideTabs />
       case 'compras':
         return <ComprasView />
       case 'cartera':
         return <CarteraView />
       case 'usuarios':
         return <UsuariosView />
+      case 'empresa':
+        return <EmpresaAjustesView />
       case 'inventario':
         return <InventarioView />
       case 'reportes':
@@ -202,6 +219,13 @@ function App() {
         <HeaderBar
           title={VIEW_TITLES[activeView]}
           role={activeRole}
+          onOpenSearch={() => setSearchOpen(true)}
+        />
+        <CommandPalette
+          open={searchOpen}
+          onClose={() => setSearchOpen(false)}
+          modules={allowedViews.map((id) => ({ id, label: VIEW_TITLES[id] }))}
+          onNavigate={handleViewChange}
         />
         <div className="page-content">
           <ErrorBoundary>

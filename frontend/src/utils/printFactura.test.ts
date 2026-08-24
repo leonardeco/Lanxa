@@ -61,8 +61,18 @@ describe('printFactura', () => {
     expect(out).toContain('<!DOCTYPE html>');
     expect(out).toContain('Documento de Venta');
     expect(out).toContain('LNX-V-0001');
-    expect(out).toContain('TECNOLOGÍA E INNOVACIÓN SUPER OZONO S.A.S.');
+    expect(out).toContain('LANXA S.A.S.');
     expect(out).toContain('sin resolución DIAN configurada');
+  });
+
+  it('usa la razón social de ajustes de empresa en el membrete', () => {
+    const { html } = mockPrintWindow();
+    printFactura(makeVenta(), { empresa: { nombre: 'Mi Empresa SAS', nit: '8001', ciudad: 'Cali' } });
+    const out = html();
+    expect(out).toContain('Mi Empresa SAS');
+    expect(out).toContain('NIT: 8001');
+    expect(out).toContain('Cali');
+    expect(out).not.toContain('LANXA S.A.S.');
   });
 
   it('incluye bloque de resolución DIAN y aviso Habeas Data cuando se configuran', () => {

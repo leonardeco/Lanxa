@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { api, setOnSessionExpired, setAccessToken } from '../services/api';
 import { jwtDecode } from 'jwt-decode';
 import { AuthContext, type User } from './auth';
+import { invalidateEmpresaCache } from '../hooks/useEmpresa';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -27,6 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setAccessToken(null);
     setToken(null);
     setUser(null);
+    invalidateEmpresaCache();
   };
 
   useEffect(() => {

@@ -1,26 +1,26 @@
 import { useState, useEffect } from 'react'
 import type { RolUsuario } from '../App'
-import { APP_VERSION } from '../config'
+import { useEmpresa } from '../hooks/useEmpresa'
 
 interface HeaderBarProps {
   title: string
   role: RolUsuario
+  onOpenSearch?: () => void
 }
 
-export default function HeaderBar({ title, role }: HeaderBarProps) {
+function shortcutLabel() {
+  if (typeof navigator === 'undefined') return 'Ctrl+K'
+  return /Mac|iPhone|iPad/.test(navigator.platform) ? '⌘K' : 'Ctrl+K'
+}
+
+export default function HeaderBar({ title, role, onOpenSearch }: HeaderBarProps) {
   const [time, setTime] = useState(new Date())
-  const [showNotifications, setShowNotifications] = useState(false)
+  const empresa = useEmpresa()
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 60000)
     return () => clearInterval(timer)
   }, [])
-
-  const notifications = [
-    { id: 1, text: `ERP LAN v${APP_VERSION} operativo`, type: 'success', time: 'Actual' },
-    { id: 2, text: 'Pendiente: validar PUC con el Contador', type: 'warning', time: 'Negocio' },
-    { id: 3, text: 'RRHH / FE DIAN: fase siguiente', type: 'info', time: 'Roadmap' },
-  ]
 
   return (
     <header className="header-bar" id="erp-header">
@@ -37,36 +37,21 @@ export default function HeaderBar({ title, role }: HeaderBarProps) {
         </div>
       </div>
       <div className="header-right">
+        {onOpenSearch && (
+          <button
+            type="button"
+            className="header-search-btn"
+            onClick={onOpenSearch}
+            title={`Buscar (${shortcutLabel()})`}
+          >
+            🔍 Buscar
+            <kbd>{shortcutLabel()}</kbd>
+          </button>
+        )}
         <div className="header-time">
           {time.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', hour12: true })}
         </div>
-        <div className="header-nit">LANXA S.A.S.</div>
-
-        {/* Notificaciones */}
-        <div className="header-notifications-wrapper">
-          <button
-            className="header-notification-btn"
-            onClick={() => setShowNotifications(!showNotifications)}
-            title="Notificaciones"
-          >
-            🔔
-            <span className="notification-badge">{notifications.length}</span>
-          </button>
-          {showNotifications && (
-            <div className="notifications-dropdown fade-in">
-              <div className="notifications-header">
-                <span>Notificaciones</span>
-                <button onClick={() => setShowNotifications(false)} className="notifications-close">✕</button>
-              </div>
-              {notifications.map((n) => (
-                <div key={n.id} className={`notification-item ${n.type}`}>
-                  <div className="notification-text">{n.text}</div>
-                  <div className="notification-time">{n.time}</div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <div className="header-nit">{empresa?.razon_social || 'Lanxa ERP'}</div>
 
         <div className="header-status">
           <span className="status-dot" />

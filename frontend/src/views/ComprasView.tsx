@@ -8,12 +8,13 @@ import {
 } from '../services/comprasApi';
 import { ventasApi, type Producto } from '../services/ventasApi';
 import { printCompra } from '../utils/printCompra';
+import { useEmpresa, empresaToPrint } from '../hooks/useEmpresa';
 import { useUnsavedChanges, confirmarDescartar } from '../utils/unsavedGuard';
 import Toast from '../components/Toast';
 import Modal from '../components/Modal';
 import ErrorState from '../components/ErrorState';
 
-type ComprasTab = 'dashboard' | 'proveedores' | 'compras' | 'nueva';
+export type ComprasTab = 'dashboard' | 'proveedores' | 'compras' | 'nueva';
 
 // ══════════════════════════════════════════════════════════
 // HELPERS
@@ -437,6 +438,7 @@ function ComprasListTab({
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<Compra | null>(null);
+  const empresa = useEmpresa();
 
   const load = useCallback(() => {
     setLoading(true);
@@ -534,7 +536,7 @@ function ComprasListTab({
                   </td>
                   <td style={{ display: 'flex', gap: 4 }}>
                     <button className="btn-icon" onClick={() => setSelected(c)} title="Ver detalle">🔍</button>
-                    <button className="btn-icon" onClick={() => printCompra(c)} title="Imprimir">🖨️</button>
+                    <button className="btn-icon" onClick={() => printCompra(c, empresaToPrint(empresa))} title="Imprimir">🖨️</button>
                     {c.estado === 'Borrador' && (
                       <button className="btn-icon" style={{ color: '#2563eb' }} onClick={() => handleConfirmar(c)} title="Confirmar">✔️</button>
                     )}
@@ -623,7 +625,7 @@ function ComprasListTab({
           </div>
           <div className="modal-footer">
             <button className="btn-secondary" onClick={() => setSelected(null)}>Cerrar</button>
-            <button className="btn-primary" onClick={() => printCompra(selected)}>🖨️ Imprimir</button>
+            <button className="btn-primary" onClick={() => printCompra(selected, empresaToPrint(empresa))}>🖨️ Imprimir</button>
           </div>
         </Modal>
       )}
@@ -970,8 +972,14 @@ function NuevaCompraTab({
 // MAIN COMPONENT
 // ══════════════════════════════════════════════════════════
 
-export default function ComprasView() {
-  const [tab, setTab] = useState<ComprasTab>('dashboard');
+export default function ComprasView({
+  initialTab = 'dashboard',
+  hideTabs = false,
+}: {
+  initialTab?: ComprasTab;
+  hideTabs?: boolean;
+}) {
+  const [tab, setTab] = useState<ComprasTab>(initialTab);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   const showToast = useCallback((message: string, type: 'success' | 'error') => {
@@ -989,6 +997,7 @@ export default function ComprasView() {
     <div>
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
 
+      {!hideTabs && (
       <div className="tabs-bar" style={{ marginBottom: 20 }}>
         {TABS.map(t => (
           <button
@@ -1000,6 +1009,7 @@ export default function ComprasView() {
           </button>
         ))}
       </div>
+      )}
 
       {tab === 'dashboard' && <ComprasDashboardTab />}
       {tab === 'proveedores' && <ProveedoresTab onToast={showToast} />}

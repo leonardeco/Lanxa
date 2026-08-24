@@ -17,26 +17,19 @@ import {
 import { printFactura, type PrintFacturaOptions } from '../utils/printFactura';
 import { printCotizacion } from '../utils/printCotizacion';
 import { descargarCsv } from '../utils/exportCsv';
+import { useEmpresa, empresaToPrint } from '../hooks/useEmpresa';
 import Toast from '../components/Toast';
 import Modal from '../components/Modal';
 import ErrorState from '../components/ErrorState';
+import ClienteFichaModal from './ClienteFichaModal';
 
-type VentasTab = 'dashboard' | 'productos' | 'clientes' | 'cotizaciones' | 'facturas';
+export type VentasTab = 'dashboard' | 'productos' | 'clientes' | 'cotizaciones' | 'facturas';
 
 // ══════════════════════════════════════════════════════════
 // MARCAS PARA FILTRO
 // ══════════════════════════════════════════════════════════
 
-const MARCAS = [
-  'Superozono', 'Ecoozono', 'Agroking', 'Ozono Evolution',
-  'Agro Vital', 'Agro Fusion', 'Hiper Ozono', 'Ozono Pro', 'Ozomax', 'Biozono',
-];
-
-const MARCA_COLORS: Record<string, string> = {
-  Superozono: '#2dd4a0', Ecoozono: '#60a5fa', Agroking: '#fbbf24',
-  'Ozono Evolution': '#a78bfa', 'Agro Vital': '#22d3ee', 'Agro Fusion': '#6ee7b7',
-  'Hiper Ozono': '#3b82f6', 'Ozono Pro': '#f59e0b', Ozomax: '#f87171', Biozono: '#8b5cf6',
-};
+const MARCA_COLORS: Record<string, string> = {};
 
 // ══════════════════════════════════════════════════════════
 // VENTAS DASHBOARD TAB
@@ -126,11 +119,11 @@ function ProductosTab() {
 
   const fetchProductos = useCallback(() => {
     setLoading(true);
-    ventasApi.getProductos(filtroMarca || undefined)
+    ventasApi.getProductos()
       .then(res => setProductos(res.data))
       .catch(() => setToast({ msg: 'Error al cargar productos', type: 'error' }))
       .finally(() => setLoading(false));
-  }, [filtroMarca]);
+  }, []);
 
   useEffect(() => { fetchProductos(); }, [fetchProductos]);
 
@@ -163,10 +156,13 @@ function ProductosTab() {
   };
 
   const q = search.toLowerCase();
+  const marcas = [...new Set(productos.map(p => p.marca).filter(Boolean))].sort();
   const productosFiltrados = productos.filter(p =>
-    p.sku.toLowerCase().includes(q) ||
-    p.nombre.toLowerCase().includes(q) ||
-    p.marca.toLowerCase().includes(q)
+    (!filtroMarca || p.marca === filtroMarca) && (
+      p.sku.toLowerCase().includes(q) ||
+      p.nombre.toLowerCase().includes(q) ||
+      (p.marca || '').toLowerCase().includes(q)
+    )
   );
 
   return (
@@ -189,11 +185,12 @@ function ProductosTab() {
               className="form-select-sm"
               value={filtroMarca}
               onChange={e => setFiltroMarca(e.target.value)}
+              aria-label="Filtrar por marca"
             >
               <option value="">Todas las marcas</option>
-              {MARCAS.map(m => <option key={m} value={m}>{m}</option>)}
+              {marcas.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
-            <div className="table-count">{productos.length} productos</div>
+            <div className="table-count">{productosFiltrados.length} productos</div>
             <button className="btn-primary-sm" onClick={() => { setEditing(null); setShowModal(true); }}>
               + Nuevo Producto
             </button>
@@ -202,6 +199,16 @@ function ProductosTab() {
 
         {loading ? (
           <div className="empty-state"><div className="empty-state-icon">⏳</div></div>
+        ) : productosFiltrados.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">📦</div>
+            <div className="empty-state-text">
+              {productos.length === 0 ? 'No hay productos en el catálogo' : 'Ningún producto coincide con el filtro'}
+            </div>
+            <div className="empty-state-sub">
+              {productos.length === 0 ? 'Crea el primero con el botón "+ Nuevo Producto"' : 'Prueba otra marca o término de búsqueda'}
+            </div>
+          </div>
         ) : (
           <div style={{ maxHeight: 'calc(100vh - 280px)', overflowY: 'auto' }}>
             <table className="data-table">
@@ -263,6 +270,7 @@ function ProductosTab() {
       {showModal && (
         <ProductoFormModal
           producto={editing}
+          marcasExistentes={marcas}
           onSave={handleSaveProducto}
           onClose={() => { setShowModal(false); setEditing(null); }}
         />
@@ -273,8 +281,9 @@ function ProductosTab() {
 
 // ── Producto Form Modal ──
 
-function ProductoFormModal({ producto, onSave, onClose }: {
+function ProductoFormModal({ producto, marcasExistentes, onSave, onClose }: {
   producto: Producto | null;
+  marcasExistentes: string[];
   onSave: (data: Record<string, any>) => void;
   onClose: () => void;
 }) {
@@ -282,8 +291,8 @@ function ProductoFormModal({ producto, onSave, onClose }: {
     sku: producto?.sku || '',
     nombre: producto?.nombre || '',
     descripcion: producto?.descripcion || '',
-    categoria: producto?.categoria || 'Biocida',
-    marca: producto?.marca || 'Superozono',
+    categoria: producto?.categoria || 'Otro',
+    marca: producto?.marca || '',
     unidad_medida: producto?.unidad_medida || 'Litro',
     contenido_neto: producto?.contenido_neto || '',
     precio_venta: producto?.precio_venta?.toString() || '',
@@ -322,19 +331,20 @@ function ProductoFormModal({ producto, onSave, onClose }: {
         <div className="form-row">
           <div className="form-group">
             <label>SKU *</label>
-            <input type="text" value={form.sku} onChange={set('sku')} required disabled={!!producto} placeholder="SOZ-001" />
+            <input type="text" value={form.sku} onChange={set('sku')} required disabled={!!producto} placeholder="PRD-001" />
           </div>
           <div className="form-group">
             <label>Marca *</label>
-            <select value={form.marca} onChange={set('marca')}>
-              {MARCAS.map(m => <option key={m} value={m}>{m}</option>)}
-            </select>
+            <input type="text" list="marcas-existentes" value={form.marca} onChange={set('marca')} required placeholder="Tu marca" />
+            <datalist id="marcas-existentes">
+              {marcasExistentes.map(m => <option key={m} value={m} />)}
+            </datalist>
           </div>
         </div>
 
         <div className="form-group">
           <label>Nombre del Producto *</label>
-          <input type="text" value={form.nombre} onChange={set('nombre')} required placeholder="Biocida Concentrado 1L" />
+          <input type="text" value={form.nombre} onChange={set('nombre')} required placeholder="Nombre del producto" />
         </div>
 
         <div className="form-row">
@@ -437,6 +447,7 @@ function ClientesTab() {
   const [soloRetenedores, setSoloRetenedores] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<Cliente | null>(null);
+  const [ficha, setFicha] = useState<Cliente | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
 
   const fetchClientes = useCallback(() => {
@@ -666,6 +677,7 @@ function ClientesTab() {
                     </td>
                     <td>
                       <div className="action-btns">
+                        <button className="btn-icon" title="Ficha 360" aria-label="Ficha 360" onClick={() => setFicha(c)}>👁️</button>
                         <button className="btn-icon" title="Editar" onClick={() => { setEditing(c); setShowModal(true); }}>✏️</button>
                         {c.activo && <button className="btn-icon" title="Desactivar" onClick={() => handleDelete(c)}>🗑️</button>}
                       </div>
@@ -677,6 +689,14 @@ function ClientesTab() {
           </div>
         )}
       </div>
+
+      {ficha && (
+        <ClienteFichaModal
+          cliente={ficha}
+          onClose={() => setFicha(null)}
+          onEdit={() => { setEditing(ficha); setShowModal(true); setFicha(null); }}
+        />
+      )}
 
       {showModal && (
         <ClienteFormModal
@@ -913,6 +933,7 @@ function CotizacionesTab() {
   const [showNueva, setShowNueva] = useState(false);
   const [showDetalle, setShowDetalle] = useState<Cotizacion | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
+  const empresa = useEmpresa();
 
   const fetchCotizaciones = useCallback(() => {
     setLoading(true);
@@ -1037,7 +1058,7 @@ function CotizacionesTab() {
                     <td>
                       <div className="action-btns">
                         <button className="btn-icon" title="Ver detalle" onClick={() => setShowDetalle(c)}>👁️</button>
-                        <button className="btn-icon" title="Imprimir / PDF" onClick={() => printCotizacion(c)}>🖨️</button>
+                        <button className="btn-icon" title="Imprimir / PDF" onClick={() => printCotizacion(c, empresaToPrint(empresa))}>🖨️</button>
                         {c.estado === 'Borrador' && (
                           <>
                             <button className="btn-icon" title="Editar" onClick={() => setEditando(c)}>✏️</button>
@@ -1082,7 +1103,7 @@ function CotizacionesTab() {
       {showDetalle && (
         <Modal title={`Detalle — ${showDetalle.numero}`} onClose={() => setShowDetalle(null)} wide>
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
-            <button className="btn btn-primary" style={{ fontSize: '0.85rem' }} onClick={() => printCotizacion(showDetalle)}>
+            <button className="btn btn-primary" style={{ fontSize: '0.85rem' }} onClick={() => printCotizacion(showDetalle, empresaToPrint(empresa))}>
               🖨️ Imprimir / Guardar PDF
             </button>
           </div>
@@ -1451,6 +1472,7 @@ function DevolucionModal({ venta, onClose, onDone }: {
 function printOptsFromEmpresa(empresa: EmpresaInfo | null): PrintFacturaOptions {
   if (!empresa) return {};
   return {
+    empresa: empresaToPrint(empresa),
     dian: {
       resolucionNumero: empresa.dian_resolucion_numero || undefined,
       resolucionFecha: empresa.dian_resolucion_fecha || undefined,
@@ -1466,11 +1488,13 @@ function printOptsFromEmpresa(empresa: EmpresaInfo | null): PrintFacturaOptions 
 function FacturasTab() {
   const [ventas, setVentas] = useState<Venta[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filtroEstado, setFiltroEstado] = useState('');
+  const [filtroTexto, setFiltroTexto] = useState('');
   const [showNueva, setShowNueva] = useState(false);
   const [showDetalle, setShowDetalle] = useState<Venta | null>(null);
   const [showDevolucion, setShowDevolucion] = useState<Venta | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
-  const [empresa, setEmpresa] = useState<EmpresaInfo | null>(null);
+  const empresa = useEmpresa();
 
   const fetchVentas = useCallback(() => {
     setLoading(true);
@@ -1481,9 +1505,17 @@ function FacturasTab() {
   }, []);
 
   useEffect(() => { fetchVentas(); }, [fetchVentas]);
-  useEffect(() => {
-    ventasApi.getEmpresa().then(r => setEmpresa(r.data)).catch(() => {/* impresión usa defaults */});
-  }, []);
+
+  const ventasFiltradas = ventas.filter(v => {
+    if (filtroEstado && v.estado !== filtroEstado) return false;
+    if (!filtroTexto.trim()) return true;
+    const q = filtroTexto.toLowerCase();
+    return (
+      v.numero.toLowerCase().includes(q) ||
+      (v.cliente_razon_social || '').toLowerCase().includes(q) ||
+      (v.cliente_nit || '').includes(filtroTexto.trim())
+    );
+  });
 
   const handleAnular = async (v: Venta) => {
     if (!confirm(`¿Anular venta ${v.numero}?`)) return;
@@ -1533,7 +1565,27 @@ function FacturasTab() {
         <div className="table-header">
           <div className="table-title">🧾 Documentos de Venta</div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <div className="table-count">{ventas.length} documentos</div>
+            <input
+              className="form-search"
+              type="search"
+              placeholder="Buscar número, cliente o NIT…"
+              value={filtroTexto}
+              onChange={e => setFiltroTexto(e.target.value)}
+              aria-label="Buscar documentos de venta"
+            />
+            <select
+              className="form-select-sm"
+              value={filtroEstado}
+              onChange={e => setFiltroEstado(e.target.value)}
+              aria-label="Filtrar por estado"
+            >
+              <option value="">Todos los estados</option>
+              <option value="Borrador">Borrador</option>
+              <option value="Confirmada">Confirmada</option>
+              <option value="Facturada">Facturada</option>
+              <option value="Anulada">Anulada</option>
+            </select>
+            <div className="table-count">{ventasFiltradas.length} documentos</div>
             <button className="btn-primary-sm" onClick={() => setShowNueva(true)}>
               + Nueva Venta
             </button>
@@ -1547,6 +1599,12 @@ function FacturasTab() {
             <div className="empty-state-icon">🧾</div>
             <div className="empty-state-text">No hay documentos de venta</div>
             <div className="empty-state-sub">Crea tu primera venta con el botón "+ Nueva Venta"</div>
+          </div>
+        ) : ventasFiltradas.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">🔍</div>
+            <div className="empty-state-text">Ningún documento coincide con el filtro</div>
+            <div className="empty-state-sub">Cambia el estado o el texto de búsqueda</div>
           </div>
         ) : (
           <div style={{ maxHeight: 'calc(100vh - 280px)', overflowY: 'auto' }}>
@@ -1565,7 +1623,7 @@ function FacturasTab() {
                 </tr>
               </thead>
               <tbody>
-                {ventas.map(v => (
+                {ventasFiltradas.map(v => (
                   <tr key={v.id} style={{ opacity: v.estado === 'Anulada' ? 0.5 : 1 }}>
                     <td className="code">{v.numero}</td>
                     <td>{new Date(v.fecha + 'T00:00:00').toLocaleDateString('es-CO')}</td>
@@ -1885,8 +1943,14 @@ function NuevaVentaModal({ onClose, onCreated }: { onClose: () => void; onCreate
 // MAIN VENTAS VIEW
 // ══════════════════════════════════════════════════════════
 
-export default function VentasView() {
-  const [activeTab, setActiveTab] = useState<VentasTab>('dashboard');
+export default function VentasView({
+  initialTab = 'dashboard',
+  hideTabs = false,
+}: {
+  initialTab?: VentasTab;
+  hideTabs?: boolean;
+}) {
+  const [activeTab, setActiveTab] = useState<VentasTab>(initialTab);
 
   const TABS: { id: VentasTab; icon: string; label: string }[] = [
     { id: 'dashboard', icon: '📊', label: 'Dashboard' },
@@ -1898,7 +1962,7 @@ export default function VentasView() {
 
   return (
     <div className="ventas-module fade-in">
-      {/* Tab Navigation */}
+      {!hideTabs && (
       <div className="tabs-bar">
         {TABS.map(tab => (
           <button
@@ -1911,8 +1975,8 @@ export default function VentasView() {
           </button>
         ))}
       </div>
+      )}
 
-      {/* Tab Content */}
       <div className="tab-content">
         {activeTab === 'dashboard' && <VentasDashboardTab />}
         {activeTab === 'productos' && <ProductosTab />}
