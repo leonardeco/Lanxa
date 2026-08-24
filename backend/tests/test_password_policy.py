@@ -8,6 +8,7 @@ from httpx import AsyncClient
 from app.core.passwords import PasswordPolicyError, validate_password_policy
 
 
+@pytest.mark.no_db
 def test_validate_password_ok():
     assert validate_password_policy("claveSegura1") == "claveSegura1"
     assert validate_password_policy("Abcd1234") == "Abcd1234"
@@ -21,8 +22,10 @@ def test_validate_password_ok():
         ("12345678", "letra"),
         ("Admin2026!", "no está permitida"),
         ("password1", "no está permitida"),
+        ("superozonoglobal1", "no está permitida"),
     ],
 )
+@pytest.mark.no_db
 def test_validate_password_rechaza(pwd: str, fragmento: str):
     with pytest.raises(PasswordPolicyError) as exc:
         validate_password_policy(pwd)

@@ -29,6 +29,7 @@ async def test_onboard_crea_tenant_y_admin(
     assert r.status_code == 201, r.text
     body = r.json()
     assert body["tenant"]["codigo"] == "demo-co"
+    assert body["tenant"]["dominio"] == "demo-co.example.com"
     assert body["admin_email"] == "admin@demo-co.example.com"
     tid = body["tenant"]["id"]
     assert tid != DEFAULT_TENANT_ID

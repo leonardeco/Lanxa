@@ -232,8 +232,8 @@ EMPRESA_RAZON_SOCIAL=TECNOLOGIA E INNOVACION SUPER OZONO S.A.S.
 EMPRESA_CIUDAD=Armenia, Quindio
 
 # Usuario admin del seed (se crea al iniciar si no existe)
-SEED_ADMIN_EMAIL=admin@superozonoglobal.com
-SEED_ADMIN_PASSWORD=Admin2026!          # cambiar en producción (hay warning si sigue el de fábrica)
+SEED_ADMIN_EMAIL=admin@lanxa.local
+SEED_ADMIN_PASSWORD=CAMBIA_ESTA_CLAVE    # obligatorio en producción (DEBUG=false rechaza la de fábrica)
 
 # Retenciones — parámetros tributarios
 UVT_VALOR=52374                          # UVT 2026 (DIAN Res. 000238/2025); override por año si cambia
@@ -294,12 +294,11 @@ Esto abre dos ventanas de cmd (HTTPS, con certificado local — ver sección 6):
 
 | Rol | Email | Contraseña | Acceso |
 |---|---|---|---|
-| Superusuario (dueño) | `admin@superozonoglobal.com` | `superozonoglobal` | Todo el sistema — ve los 3 países |
-| Auxiliar Perú | `admin@superozonoperu.com` | *(definida en Usuarios)* | Solo datos de Perú |
-| Auxiliar Ecuador | `admin@superozonoglobal.ec` | *(definida en Usuarios)* | Solo datos de Ecuador |
+| Superusuario (dueño) | valor de `SEED_ADMIN_EMAIL` en `backend/.env` (p. ej. `admin@lanxa.local`) | **solo** en `SEED_ADMIN_PASSWORD` del `.env` — nunca en git | Todo el sistema |
+| Auxiliares por país | las dadas de alta en Usuarios | definidas en Usuarios (reset por Superusuario) | Solo el tenant de su dominio de email |
 
-> **Nota:** La contraseña del Superusuario se configura en `backend/.env` → `SEED_ADMIN_PASSWORD`.
-> El valor actual es `superozonoglobal`. Cámbiala en producción.
+> **Nota:** El login resuelve el tenant por el dominio del email (`Tenant.dominio`).
+> No publiques contraseñas en este archivo. Rótala en la UI si alguna vez estuvo en git.
 
 ### Con Docker (producción — PC Servidor)
 
@@ -737,7 +736,7 @@ El seeder (`seeds/seed.py`) se ejecuta automáticamente al iniciar el backend. E
 | Parámetros nómina | 15 conceptos de prestación de servicios |
 | Productos | 15 productos de las 10 marcas |
 | Clientes | 6 distribuidores B2B de ejemplo |
-| Usuario inicial | `admin@superozonoglobal.com` / `superozonoglobal` (rol: **Superusuario**). Clave definida en `SEED_ADMIN_PASSWORD` del `backend/.env` |
+| Usuario inicial | `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` del `backend/.env` (rol: **Superusuario**). Nunca documentar la clave en git. |
 
 ---
 

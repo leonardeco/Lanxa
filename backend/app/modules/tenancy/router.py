@@ -18,6 +18,7 @@ from app.core.tenancy import (
     DEFAULT_TENANT_ID,
     Tenant,
     apply_rls_tenant,
+    dominio_desde_email,
     get_tenant_id,
     set_tenant_id,
 )
@@ -78,11 +79,20 @@ async def onboard_tenant(
     if existing:
         raise HTTPException(400, f"Ya existe un tenant con código '{codigo}'")
 
+    try:
+        dominio = dominio_desde_email(str(body.admin_email))
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    dominio_taken = await db.scalar(select(Tenant.id).where(Tenant.dominio == dominio))
+    if dominio_taken:
+        raise HTTPException(400, f"Ya existe un tenant con dominio '{dominio}'")
+
     # tenants no tiene RLS; inserts de filas tenant-scoped requieren GUC del NUEVO tenant
     tenant = Tenant(
         codigo=codigo,
         razon_social=body.razon_social.strip(),
         nit=body.nit,
+        dominio=dominio,
         activo=True,
         notas=body.notas,
     )

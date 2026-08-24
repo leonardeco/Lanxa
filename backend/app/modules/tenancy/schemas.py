@@ -28,6 +28,7 @@ class TenantResponse(BaseModel):
     codigo: str
     razon_social: str
     nit: str | None = None
+    dominio: str | None = None
     activo: bool
 
     model_config = {"from_attributes": True}

@@ -12,10 +12,28 @@ from app.core.security import create_access_token
 from app.core.tenancy import (
     DEFAULT_TENANT_ID,
     Tenant,
+    dominio_desde_email,
     get_tenant_id,
     set_tenant_id,
     reset_tenant_id,
 )
+
+
+@pytest.mark.no_db
+def test_dominio_desde_email():
+    assert dominio_desde_email("Admin@Lanxa.Local") == "lanxa.local"
+
+
+@pytest.mark.asyncio
+async def test_login_dominio_desconocido(client):
+    r = await client.post(
+        "/api/login/access-token",
+        data={"username": "nadie@dominio-inexistente.test", "password": "testpassword"},
+    )
+    assert r.status_code == 400
+    assert "incorrectos" in r.json()["detail"].lower()
+
+
 @pytest.mark.asyncio
 async def test_tenant_default_existe(db_session):
     t = await db_session.scalar(select(Tenant).where(Tenant.id == DEFAULT_TENANT_ID))

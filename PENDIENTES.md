@@ -43,7 +43,7 @@ Estado: LAN **v0.3.0** operativa. Suite API (Postgres local) + Vitest + E2E (CI 
 | smoke | Smoke diario | ✅ `ops/smoke-diario.bat` + tarea **SuperOzonoERP-SmokeDiario** 08:00. Verificado login Superusuario |
 | 36 | **Tarea 6 Run Perú — alta real del tenant** | ✅ **Completado 2026-07-24**: tenant Perú (`codigo="peru"`) onboardeado en producción real, admin `auxiliar.peru@superozonoglobal.com` |
 | 37 | **Confirmar dominio de email de Perú** | 🟡 **Técnicamente resuelto 2026-08-03** — feature implementado en `main` (migración `4e24b843eccd`). Dominio elegido: `superozonoperu.com`. **Queda:** validación por el negocio. Si no es correcto: `UPDATE tenants SET dominio = 'dominio-real.com' WHERE codigo = 'peru';` + notificar al usuario auxiliar.peru |
-| 38 | **Prueba en navegador — login por dominio** | 🟡 **Pendiente** — login verificado por DB directamente (query OK). Probar visualmente en `https://192.168.20.108:5173` con `admin@superozonoglobal.com` / `superozonoglobal` |
+| 38 | **Prueba en navegador — login por dominio** | 🟡 **Pendiente** — probar en el HTTPS de LAN con el Superusuario de `backend/.env` (no documentar la clave aquí). |
 | 39 | **Merge — `fix-login-tenant-domain`** | ✅ **Cerrado 2026-08-03** — feature reimplementado directamente en `main` (rama original nunca pusheada al remote). Commit `f3340bd`. |
 | 40 | **Migración de `UniqueConstraint`s + FK tenants** | ✅ **Cerrado 2026-08-03** — migración `3deee189e9bd` aplicada. FKs nombradas, unique constraints compuestos, `alembic check` sin drift. |
 

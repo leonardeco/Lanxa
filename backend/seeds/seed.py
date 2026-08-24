@@ -21,7 +21,7 @@ from app.modules.ventas.models import (
 from app.modules.usuarios.models import Usuario
 from app.core.security import get_password_hash
 from app.core.config import get_settings
-from app.core.tenancy import Tenant, DEFAULT_TENANT_ID
+from app.core.tenancy import Tenant, DEFAULT_TENANT_ID, dominio_desde_email
 
 logger = structlog.get_logger()
 settings = get_settings()
@@ -273,15 +273,21 @@ async def seed_tenant(session):
     existing = await session.scalar(
         select(Tenant).where(Tenant.id == DEFAULT_TENANT_ID)
     )
+    dominio = dominio_desde_email(settings.SEED_ADMIN_EMAIL)
     if existing:
-        logger.info("[SKIP] Tenant default ya existe, omitiendo seed")
+        if not existing.dominio:
+            existing.dominio = dominio
+            await session.commit()
+            logger.info("[OK] Tenant default: dominio backfilled", dominio=dominio)
+        else:
+            logger.info("[SKIP] Tenant default ya existe, omitiendo seed")
         return
     session.add(Tenant(
         id=DEFAULT_TENANT_ID,
         codigo="lanxa",
         razon_social=settings.EMPRESA_RAZON_SOCIAL or "LANXA S.A.S.",
         nit=settings.EMPRESA_NIT or None,
-        dominio=None,
+        dominio=dominio,
         activo=True,
         notas="Tenant por defecto — despliegue LAN v0.3.x",
     ))

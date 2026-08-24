@@ -22,6 +22,8 @@ _FORBIDDEN = frozenset(
         "password1",
         "12345678",
         "qwerty123",
+        "superozonoglobal",
+        "superozonoglobal1",
     }
 )
 

@@ -155,6 +155,9 @@ class Cliente(TenantScoped, Base):
 class VentaDocumento(TenantScoped, Base):
     """Documentos de venta — Cabecera de facturas internas"""
     __tablename__ = "ventas_documentos"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "numero", name="uq_ventas_tenant_numero"),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     numero: Mapped[str] = mapped_column(String(20), index=True)  # LNX-V-0001 (único por tenant)
@@ -226,9 +229,12 @@ class Cotizacion(TenantScoped, Base):
     """Cotización comercial — COT-####. Sin efectos de inventario ni
     contabilidad: solo al convertirla nace una venta (en Borrador)."""
     __tablename__ = "cotizaciones"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "numero", name="uq_cotizaciones_tenant_numero"),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    numero: Mapped[str] = mapped_column(String(20), unique=True, index=True)  # COT-0001
+    numero: Mapped[str] = mapped_column(String(20), index=True)  # COT-0001
     fecha: Mapped[date] = mapped_column(Date, default=date.today)
     vigencia_dias: Mapped[int] = mapped_column(default=15)
     fecha_vencimiento: Mapped[date] = mapped_column(Date)  # fecha + vigencia_dias
@@ -286,9 +292,12 @@ class CotizacionDetalle(TenantScoped, Base):
 class DevolucionVenta(TenantScoped, Base):
     """Nota crédito — devolución parcial o total de una venta confirmada."""
     __tablename__ = "devoluciones_venta"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "numero", name="uq_dev_venta_tenant_numero"),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    numero: Mapped[str] = mapped_column(String(20), unique=True, index=True)  # NC-0001
+    numero: Mapped[str] = mapped_column(String(20), index=True)  # NC-0001
     venta_id: Mapped[int] = mapped_column(ForeignKey("ventas_documentos.id"), index=True)
     fecha: Mapped[date] = mapped_column(Date, default=date.today)
     motivo: Mapped[str] = mapped_column(String(300))

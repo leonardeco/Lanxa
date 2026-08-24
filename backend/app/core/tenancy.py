@@ -28,6 +28,17 @@ DEFAULT_TENANT_ID = 1
 _tenant_ctx: ContextVar[int | None] = ContextVar("tenant_id", default=None)
 
 
+def dominio_desde_email(email: str) -> str:
+    """Parte después del @, minúsculas. Vacío o sin @ → ValueError."""
+    raw = (email or "").strip().lower()
+    if "@" not in raw:
+        raise ValueError("email sin dominio")
+    dominio = raw.split("@", 1)[1].strip()
+    if not dominio:
+        raise ValueError("email sin dominio")
+    return dominio
+
+
 def get_tenant_id() -> int:
     """Tenant del request actual. Fallback al default LAN si aún no hay auth."""
     tid = _tenant_ctx.get()

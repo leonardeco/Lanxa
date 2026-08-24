@@ -14,23 +14,28 @@ from __future__ import annotations
 
 import re
 
-from sqlalchemy import Integer, String, select
+from sqlalchemy import ForeignKey, Integer, String, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
+from app.core.tenancy import get_tenant_id, tenant_clause
 
 _SUFFIX_RE = re.compile(r"(\d+)$")
 _MAX_RETRIES = 5
 
 
 class DocumentSequence(Base):
-    """Contador monotónico por prefijo de documento (LNX-V, RC, COT, …)."""
+    """Contador monotónico por (tenant_id, prefix). PK alineada con Alembic e6f7a8b9c0d1."""
 
     __tablename__ = "document_sequences"
     __table_args__ = {"extend_existing": True}
 
+    tenant_id: Mapped[int] = mapped_column(
+        ForeignKey("tenants.id", ondelete="RESTRICT"),
+        primary_key=True,
+    )
     prefix: Mapped[str] = mapped_column(String(32), primary_key=True)
     last_value: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
@@ -38,9 +43,11 @@ class DocumentSequence(Base):
 async def _max_suffix_from_column(
     session: AsyncSession, column, prefijo: str
 ) -> int:
-    rows = (
-        await session.execute(select(column).where(column.like(f"{prefijo}-%")))
-    ).scalars().all()
+    stmt = select(column).where(column.like(f"{prefijo}-%"))
+    model = getattr(column, "class_", None)
+    if model is not None and hasattr(model, "tenant_id"):
+        stmt = stmt.where(tenant_clause(model))
+    rows = (await session.execute(stmt)).scalars().all()
     max_num = 0
     for n in rows:
         m = _SUFFIX_RE.search(n or "")
@@ -60,16 +67,22 @@ async def next_sequential_numero(
     for _ in range(_MAX_RETRIES):
         try:
             async with session.begin_nested():
+                tid = get_tenant_id()
                 stmt = (
                     select(DocumentSequence)
-                    .where(DocumentSequence.prefix == prefijo)
+                    .where(
+                        DocumentSequence.prefix == prefijo,
+                        DocumentSequence.tenant_id == tid,
+                    )
                     .with_for_update()
                 )
                 row = await session.scalar(stmt)
 
                 if row is None:
                     seed = await _max_suffix_from_column(session, column, prefijo)
-                    row = DocumentSequence(prefix=prefijo, last_value=seed)
+                    row = DocumentSequence(
+                        tenant_id=tid, prefix=prefijo, last_value=seed
+                    )
                     session.add(row)
                     await session.flush()
 

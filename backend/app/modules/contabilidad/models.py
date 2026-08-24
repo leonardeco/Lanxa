@@ -88,7 +88,7 @@ class PlanCuentas(TenantScoped, Base):
     __tablename__ = "plan_cuentas"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    codigo_puc: Mapped[str] = mapped_column(String(20), unique=True, index=True)
+    codigo_puc: Mapped[str] = mapped_column(String(20), index=True)
     nombre: Mapped[str] = mapped_column(String(200))
     clase: Mapped[ClaseCuenta] = mapped_column(SAEnum(ClaseCuenta))
     naturaleza: Mapped[NaturalezaCuenta] = mapped_column(SAEnum(NaturalezaCuenta))
@@ -105,6 +105,10 @@ class PlanCuentas(TenantScoped, Base):
     movimientos = relationship("MovimientoAsiento", back_populates="cuenta")
     saldos_iniciales = relationship("SaldoInicial", back_populates="cuenta")
 
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "codigo_puc", name="uq_puc_tenant_codigo"),
+    )
+
     def __repr__(self):
         return f"<PlanCuentas {self.codigo_puc} - {self.nombre}>"
 
@@ -114,7 +118,7 @@ class CentroCosto(TenantScoped, Base):
     __tablename__ = "centros_costo"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    codigo: Mapped[str] = mapped_column(String(20), unique=True, index=True)
+    codigo: Mapped[str] = mapped_column(String(20), index=True)
     nombre: Mapped[str] = mapped_column(String(100))
     tipo: Mapped[TipoCentroCosto] = mapped_column(SAEnum(TipoCentroCosto))
     marca_asociada: Mapped[str | None] = mapped_column(String(100))
@@ -127,6 +131,10 @@ class CentroCosto(TenantScoped, Base):
     # Relationships
     movimientos = relationship("MovimientoAsiento", back_populates="centro_costo")
 
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "codigo", name="uq_cc_tenant_codigo"),
+    )
+
     def __repr__(self):
         return f"<CentroCosto {self.codigo} - {self.nombre}>"
 
@@ -138,7 +146,7 @@ class PeriodoContable(TenantScoped, Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     anio: Mapped[int] = mapped_column()
     mes: Mapped[int] = mapped_column()
-    periodo: Mapped[str] = mapped_column(String(7), unique=True)  # "2026-01"
+    periodo: Mapped[str] = mapped_column(String(7))  # "2026-01"
     estado: Mapped[EstadoPeriodo] = mapped_column(
         SAEnum(EstadoPeriodo), default=EstadoPeriodo.ABIERTO)
     fecha_cierre: Mapped[date | None] = mapped_column(Date)
@@ -147,7 +155,8 @@ class PeriodoContable(TenantScoped, Base):
     updated_at: Mapped[datetime | None] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
 
     __table_args__ = (
-        UniqueConstraint("anio", "mes", name="uq_periodo_anio_mes"),
+        UniqueConstraint("tenant_id", "anio", "mes", name="uq_periodo_tenant_anio_mes"),
+        UniqueConstraint("tenant_id", "periodo", name="uq_periodo_tenant_periodo"),
     )
 
     def __repr__(self):
@@ -159,7 +168,7 @@ class Tercero(TenantScoped, Base):
     __tablename__ = "terceros"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    nit_cc: Mapped[str] = mapped_column(String(20), unique=True, index=True)
+    nit_cc: Mapped[str] = mapped_column(String(20), index=True)
     dv: Mapped[str | None] = mapped_column(String(1))  # Dígito de verificación
     razon_social: Mapped[str] = mapped_column(String(200))
     tipo: Mapped[TipoTercero] = mapped_column(SAEnum(TipoTercero))
@@ -172,6 +181,10 @@ class Tercero(TenantScoped, Base):
     notas: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime | None] = mapped_column(DateTime, default=utcnow)
     updated_at: Mapped[datetime | None] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
+
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "nit_cc", name="uq_terceros_tenant_nit"),
+    )
 
     def __repr__(self):
         return f"<Tercero {self.nit_cc} - {self.razon_social}>"
@@ -252,7 +265,7 @@ class CuentaPorCobrar(TenantScoped, Base):
     __tablename__ = "cuentas_por_cobrar"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    numero_factura: Mapped[str] = mapped_column(String(50), unique=True)
+    numero_factura: Mapped[str] = mapped_column(String(50))
     fecha_emision: Mapped[date] = mapped_column(Date)
     cliente_nit: Mapped[str] = mapped_column(String(20))
     nombre_cliente: Mapped[str | None] = mapped_column(String(200))
@@ -267,13 +280,17 @@ class CuentaPorCobrar(TenantScoped, Base):
     created_at: Mapped[datetime | None] = mapped_column(DateTime, default=utcnow)
     updated_at: Mapped[datetime | None] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
 
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "numero_factura", name="uq_cxc_tenant_factura"),
+    )
+
 
 class CuentaPorPagar(TenantScoped, Base):
     """Cuentas por Pagar (CxP) inicial"""
     __tablename__ = "cuentas_por_pagar"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    numero_documento: Mapped[str] = mapped_column(String(50), unique=True)
+    numero_documento: Mapped[str] = mapped_column(String(50))
     fecha: Mapped[date] = mapped_column(Date)
     proveedor_nit: Mapped[str] = mapped_column(String(20))
     razon_social: Mapped[str | None] = mapped_column(String(200))
@@ -289,6 +306,10 @@ class CuentaPorPagar(TenantScoped, Base):
     created_at: Mapped[datetime | None] = mapped_column(DateTime, default=utcnow)
     updated_at: Mapped[datetime | None] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
 
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "numero_documento", name="uq_cxp_tenant_documento"),
+    )
+
 
 class TipoPago(str, enum.Enum):
     CXC = "CxC"
@@ -300,7 +321,7 @@ class Pago(TenantScoped, Base):
     __tablename__ = "pagos"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    numero_comprobante: Mapped[str] = mapped_column(String(20), unique=True, index=True)
+    numero_comprobante: Mapped[str] = mapped_column(String(20), index=True)
     tipo: Mapped[TipoPago] = mapped_column(SAEnum(TipoPago))
     cxc_id: Mapped[int | None] = mapped_column(index=True)  # FK lógica a cuentas_por_cobrar
     cxp_id: Mapped[int | None] = mapped_column(index=True)  # FK lógica a cuentas_por_pagar
@@ -316,13 +337,17 @@ class Pago(TenantScoped, Base):
     anulado: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[datetime | None] = mapped_column(DateTime, default=utcnow)
 
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "numero_comprobante", name="uq_pagos_tenant_numero"),
+    )
+
 
 class ParametroTributario(TenantScoped, Base):
     """Parámetros tributarios — Tarifas IVA, retenciones, etc."""
     __tablename__ = "parametros_tributarios"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    concepto: Mapped[str] = mapped_column(String(200), unique=True)
+    concepto: Mapped[str] = mapped_column(String(200))
     tarifa_valor: Mapped[Decimal | None] = mapped_column(Numeric(10, 5))
     base_aplica: Mapped[str | None] = mapped_column(String(200))
     cuenta_puc: Mapped[str | None] = mapped_column(String(20))
@@ -331,16 +356,24 @@ class ParametroTributario(TenantScoped, Base):
     created_at: Mapped[datetime | None] = mapped_column(DateTime, default=utcnow)
     updated_at: Mapped[datetime | None] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
 
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "concepto", name="uq_param_trib_tenant_concepto"),
+    )
+
 
 class ParametroNomina(TenantScoped, Base):
     """Parámetros de nómina — SMMLV, aportes, parafiscales"""
     __tablename__ = "parametros_nomina"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    concepto: Mapped[str] = mapped_column(String(200), unique=True)
+    concepto: Mapped[str] = mapped_column(String(200))
     valor_porcentaje: Mapped[Decimal | None] = mapped_column(Numeric(12, 5))
     tipo: Mapped[str | None] = mapped_column(String(20))  # %, $, x SMMLV
     notas: Mapped[str | None] = mapped_column(Text)
     activo: Mapped[bool] = mapped_column(default=True)
     created_at: Mapped[datetime | None] = mapped_column(DateTime, default=utcnow)
     updated_at: Mapped[datetime | None] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
+
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "concepto", name="uq_param_nom_tenant_concepto"),
+    )

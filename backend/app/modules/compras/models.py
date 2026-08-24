@@ -40,9 +40,12 @@ class Proveedor(TenantScoped, Base):
 
 class CompraDocumento(TenantScoped, Base):
     __tablename__ = "compras_documentos"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "numero", name="uq_compras_tenant_numero"),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    numero: Mapped[str] = mapped_column(String(20), unique=True, index=True)
+    numero: Mapped[str] = mapped_column(String(20), index=True)
     fecha: Mapped[date] = mapped_column(Date)
     fecha_vencimiento: Mapped[date | None] = mapped_column(Date)
     proveedor_id: Mapped[int] = mapped_column(ForeignKey("proveedores.id"))
@@ -93,9 +96,12 @@ class CompraDetalle(TenantScoped, Base):
 class DevolucionCompra(TenantScoped, Base):
     """Devolución a proveedor — nota débito sobre una compra confirmada."""
     __tablename__ = "devoluciones_compra"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "numero", name="uq_dev_compra_tenant_numero"),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    numero: Mapped[str] = mapped_column(String(20), unique=True, index=True)  # ND-0001
+    numero: Mapped[str] = mapped_column(String(20), index=True)  # ND-0001
     compra_id: Mapped[int] = mapped_column(ForeignKey("compras_documentos.id"), index=True)
     fecha: Mapped[date] = mapped_column(Date, default=date.today)
     motivo: Mapped[str] = mapped_column(String(300))

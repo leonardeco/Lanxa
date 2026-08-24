@@ -134,23 +134,6 @@ async def test_periodo_toggle_otro_tenant_404(client: AsyncClient, auth_headers:
 
 
 @pytest.mark.asyncio
-@pytest.mark.xfail(
-    reason=(
-        "Bug de ESQUEMA, no de query: UniqueConstraint('anio','mes') en "
-        "PeriodoContable es global, sin tenant_id. El chequeo de duplicado "
-        "en la app ya esta corregido (tenant_clause abajo), pero el INSERT "
-        "mismo revienta con IntegrityError entre tenants. Requiere una "
-        "migracion Alembic para hacer el constraint compuesto con "
-        "tenant_id — mismo problema en PlanCuentas.codigo_puc, "
-        "CentroCosto.codigo, Tercero.nit_cc, ParametroTributario.concepto, "
-        "ParametroNomina.concepto, CuentaPorCobrar.numero_factura, "
-        "CuentaPorPagar.numero_documento, Pago.numero_comprobante, "
-        "Cotizacion.numero, DevolucionVenta.numero. "
-        "Ver BITACORA.md 2026-07-24 — tarea de seguimiento separada, "
-        "no forma parte de este fix de aislamiento a nivel de queries."
-    ),
-    strict=True,
-)
 async def test_periodo_duplicado_no_choca_entre_tenants(client: AsyncClient, auth_headers: dict, db_session):
     """Crear un periodo (anio, mes) en un tenant no debe bloquear que otro
     tenant cree el mismo (anio, mes) — el chequeo de duplicado global es un

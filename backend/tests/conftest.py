@@ -115,6 +115,7 @@ async def setup_db(request):
             codigo="superozono",
             razon_social="Super Ozono Test",
             nit="901841798-5",
+            dominio="test.com",
             activo=True,
         ))
         await db.flush()
