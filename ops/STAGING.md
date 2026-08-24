@@ -18,14 +18,14 @@ Objetivo: **probar cambios sin tocar la BD de producción** en el mismo PC servi
 ### 1. Una sola vez — copiar el repo a una carpeta staging
 
 ```bat
-xcopy /E /I /H "C:\ruta\prod\superozono-erp" "C:\SuperOzono-Staging\superozono-erp"
+xcopy /E /I /H "C:\ruta\prod\Lanxa" "C:\Lanxa-Staging\Lanxa"
 ```
 
 O clonar de nuevo:
 
 ```bat
-cd C:\SuperOzono-Staging
-git clone https://github.com/leonardeco/superozono-erp.git
+cd C:\Lanxa-Staging
+git clone https://github.com/leonardeco/Lanxa.git
 ```
 
 ### 2. Script de preparación (copia BD + puertos)

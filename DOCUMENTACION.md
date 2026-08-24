@@ -85,7 +85,7 @@ Detalle ops: `ops/ESTADO-OPERATIVO-PC.md`.
 ## 3. Estructura del proyecto
 
 ```
-superozono-erp/
+Lanxa/
 ├── backend/
 │   ├── app/
 │   │   ├── api/

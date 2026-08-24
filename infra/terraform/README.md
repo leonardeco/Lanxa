@@ -77,7 +77,7 @@ domain_name  = "api.tu-dominio.com"
 route53_zone_id = "Z...."   # hosted zone
 
 enable_github_oidc = true
-github_org_repo    = "leonardeco/superozono-erp"
+github_org_repo    = "leonardeco/Lanxa"
 ```
 
 Tras `apply`:

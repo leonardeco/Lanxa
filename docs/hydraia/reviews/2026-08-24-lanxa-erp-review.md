@@ -1,8 +1,10 @@
 # Review — Lanxa ERP (2026-08-24)
 
+> **Repo canónico hoy:** [leonardeco/Lanxa](https://github.com/leonardeco/Lanxa). Lo de abajo es el estado del 24-ago-2026, cuando `origin` era Nexus-CRM y había una copia en Lanxa-ERP.
+
 HEAD local: `452f98f` on `main`.
-Remote local: `leonardeco/Nexus-CRM` (public, matches HEAD).
-Cited remote: `leonardeco/Lanxa-ERP` (public, behind at `21073356`).
+Remote local (ese día): `leonardeco/Nexus-CRM` (public, matches HEAD).
+Cited remote (ese día): `leonardeco/Lanxa-ERP` (public, behind at `21073356`).
 
 **Production audit: 44/100, blocked.** Do not treat this as ready for a public GitHub, a second company, or AWS until the blockers below are closed. The LAN single-operator path can keep running with the caveats listed.
 

@@ -29,7 +29,7 @@ enable_https    = false
 
 # GitHub Actions OIDC → ECR
 enable_github_oidc = false
-# github_org_repo    = "leonardeco/superozono-erp"
+# github_org_repo    = "leonardeco/Lanxa"
 
 # Fase 6 — Frontend S3 + CloudFront
 enable_frontend_cdn = false

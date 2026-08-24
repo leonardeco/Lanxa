@@ -7,8 +7,9 @@
 - **Artifacts:** in-repo `docs/hydraia/`
 - **Auto-commit:** true (review artifact only; no source edits)
 - **HEAD:** `452f98f` on `main` (matches `origin/main` of `leonardeco/Nexus-CRM`)
-- **Remote local:** `https://github.com/leonardeco/Nexus-CRM.git` (public)
-- **Cited remote:** `https://github.com/leonardeco/Lanxa-ERP` (public, behind — last commit `21073356`)
+- **Remote local (ese día):** `https://github.com/leonardeco/Nexus-CRM.git` (public)
+- **Cited remote (ese día):** `https://github.com/leonardeco/Lanxa-ERP` (public, behind — last commit `21073356`)
+- **Repo canónico hoy:** `https://github.com/leonardeco/Lanxa`
 
 ## Phase checklist
 
