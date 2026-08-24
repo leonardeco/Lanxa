@@ -2291,6 +2291,108 @@ body {
 /* .form-vertical → layout vertical de formulario en modales */
 .form-vertical { display: flex; flex-direction: column; gap: 14px; }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.kanban-board {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  align-items: flex-start;
+}
+.kanban-col {
+  flex: 1 0 200px;
+  min-width: 200px;
+  max-width: 280px;
+  background: var(--neutral-850);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  min-height: 220px;
+}
+.kanban-col-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.kanban-col-sum {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.72rem;
+  color: var(--neutral-400);
+  margin-bottom: 10px;
+}
+.kanban-empty {
+  font-size: 0.78rem;
+  color: var(--neutral-500);
+  padding: 16px 4px;
+  text-align: center;
+}
+.kanban-card {
+  background: var(--neutral-800);
+  border: 1px solid var(--neutral-700);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  margin-bottom: 8px;
+  cursor: grab;
+}
+.kanban-card:hover {
+  border-color: var(--oz-green-500);
+}
+.kanban-card-num {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.7rem;
+  color: var(--oz-green-300);
+}
+.kanban-card-title {
+  font-weight: 600;
+  font-size: 0.86rem;
+  color: var(--neutral-100);
+  margin: 4px 0;
+}
+.kanban-card-client {
+  font-size: 0.75rem;
+  color: var(--neutral-400);
+}
+.kanban-card-val {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.78rem;
+  color: var(--neutral-200);
+  margin-top: 6px;
+}
+.kanban-card-stage {
+  display: block;
+  margin-top: 8px;
+}
+.kanban-card-stage select {
+  width: 100%;
+  font-size: 0.75rem;
+  padding: 6px 8px;
+  background: var(--neutral-850);
+  color: var(--neutral-200);
+  border: 1px solid var(--neutral-700);
+  border-radius: 4px;
+  font-family: inherit;
+}
+.kanban-card-actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .kanban-card { transition: none; }
+}
+
 @media (max-width: 480px) {
   .kpi-grid { grid-template-columns: 1fr 1fr; }
   .btn, .btn-ghost { font-size: 0.78rem; padding: 7px 12px; }

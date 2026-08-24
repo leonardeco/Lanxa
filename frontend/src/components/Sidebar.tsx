@@ -31,6 +31,7 @@ const NAV_SECTIONS = [
     title: 'Operaciones',
     items: [
       { id: 'contactos' as ViewId, icon: '👥', label: 'Contactos' },
+      { id: 'pipeline' as ViewId, icon: '📌', label: 'Pipeline' },
       { id: 'productos' as ViewId, icon: '📦', label: 'Productos' },
       { id: 'cotizaciones' as ViewId, icon: '📋', label: 'Cotizaciones' },
       { id: 'ventas' as ViewId, icon: '🧾', label: 'Ventas' },

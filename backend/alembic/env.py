@@ -19,6 +19,7 @@ from app.modules.ventas_diarias import models as _ventas_diarias_models  # noqa:
 from app.modules.compras import models as _compras_models  # noqa: F401
 from app.modules.inventario import models as _inventario_models  # noqa: F401
 from app.modules.auditoria import models as _auditoria_models  # noqa: F401
+from app.modules.pipeline import models as _pipeline_models  # noqa: F401
 from app.core.numbering import DocumentSequence as _document_sequences  # noqa: F401
 from app.core.tenancy import Tenant as _tenant_model  # noqa: F401
 

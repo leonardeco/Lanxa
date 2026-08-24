@@ -25,6 +25,7 @@ from app.modules.reportes.router import router as reportes_router
 from app.modules.auditoria.router import router as auditoria_router
 from app.modules.tenancy.router import router as tenancy_router
 from app.modules.ventas_diarias.router import router as ventas_diarias_router
+from app.modules.pipeline.router import router as pipeline_router
 from app.modules.auditoria.context import set_client_ip
 from app.modules.contabilidad.schemas import HealthResponse
 
@@ -214,3 +215,4 @@ app.include_router(reportes_router)
 app.include_router(auditoria_router)
 app.include_router(tenancy_router)
 app.include_router(ventas_diarias_router)
+app.include_router(pipeline_router)

@@ -108,6 +108,7 @@ RLS_TABLES: tuple[str, ...] = (
     "ventas_diarias",
     "ventas_diarias_detalles",
     "pagos_sueltos_diarios",
+    "negocios",
 )
 
 

@@ -25,6 +25,7 @@ const InventarioView = lazy(() => import('./views/InventarioView'))
 const ReportesView = lazy(() => import('./views/ReportesView'))
 const EmpresaAjustesView = lazy(() => import('./views/EmpresaAjustesView'))
 const ContactosView = lazy(() => import('./views/ContactosView'))
+const PipelineView = lazy(() => import('./views/PipelineView'))
 
 export type ViewId =
   | 'dashboard'
@@ -45,6 +46,7 @@ export type ViewId =
   | 'plataformas'
   | 'reportes'
   | 'empresa'
+  | 'pipeline'
 
 export type RolUsuario =
   | 'Superusuario'
@@ -72,28 +74,29 @@ const VIEW_TITLES: Record<ViewId, string> = {
   reportes: 'Reportes & BI',
   usuarios: 'Gestión de Usuarios',
   empresa: 'Ajustes de empresa',
+  pipeline: 'Pipeline comercial',
 }
 
 // Qué módulos puede ver cada rol
 const ROLE_VIEWS: Record<RolUsuario, ViewId[]> = {
   Superusuario: [
     'dashboard', 'puc', 'centros-costo', 'periodos', 'tributarios', 'nomina',
-    'contactos', 'productos', 'cotizaciones', 'ventas',
+    'contactos', 'pipeline', 'productos', 'cotizaciones', 'ventas',
     'compras', 'cartera', 'inventario', 'rrhh', 'plataformas', 'reportes', 'usuarios', 'empresa',
   ],
   Directora: [
     'dashboard', 'puc', 'centros-costo', 'periodos', 'tributarios', 'nomina',
-    'contactos', 'productos', 'cotizaciones', 'ventas',
+    'contactos', 'pipeline', 'productos', 'cotizaciones', 'ventas',
     'compras', 'cartera', 'inventario', 'reportes', 'empresa',
   ],
-  CEO: ['dashboard', 'reportes', 'contactos', 'productos', 'cotizaciones', 'ventas', 'compras', 'cartera', 'inventario'],
+  CEO: ['dashboard', 'reportes', 'contactos', 'pipeline', 'productos', 'cotizaciones', 'ventas', 'compras', 'cartera', 'inventario'],
   Contador: [
     'dashboard', 'puc', 'centros-costo', 'periodos', 'tributarios',
-    'cartera', 'reportes', 'contactos', 'productos', 'cotizaciones', 'ventas', 'compras',
+    'cartera', 'reportes', 'contactos', 'pipeline', 'productos', 'cotizaciones', 'ventas', 'compras',
   ],
   'Auxiliar Contable': [
     'dashboard', 'puc', 'centros-costo', 'periodos', 'tributarios',
-    'contactos', 'productos', 'cotizaciones', 'ventas', 'compras', 'cartera', 'reportes',
+    'contactos', 'pipeline', 'productos', 'cotizaciones', 'ventas', 'compras', 'cartera', 'reportes',
   ],
 }
 
@@ -173,6 +176,8 @@ function App() {
         return <NominaView />
       case 'contactos':
         return <ContactosView />
+      case 'pipeline':
+        return <PipelineView />
       case 'productos':
         return <VentasView key="productos" initialTab="productos" hideTabs />
       case 'cotizaciones':
