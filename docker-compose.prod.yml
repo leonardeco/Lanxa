@@ -13,8 +13,8 @@ services:
       args:
         # Vacío = el browser llama /api en el mismo origen (nginx proxy)
         VITE_API_URL: ${VITE_API_URL:-}
-    image: superozono-frontend:${IMAGE_TAG:-latest}
-    container_name: superozono-frontend
+    image: lanxa-frontend:${IMAGE_TAG:-latest}
+    container_name: lanxa-frontend
     restart: unless-stopped
     ports:
       - "${FRONTEND_PORT:-80}:80"
@@ -22,14 +22,14 @@ services:
       backend:
         condition: service_healthy
     networks:
-      - superozono-net
+      - lanxa-net
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    image: superozono-api:${IMAGE_TAG:-latest}
-    container_name: superozono-api
+    image: lanxa-api:${IMAGE_TAG:-latest}
+    container_name: lanxa-api
     restart: unless-stopped
     ports:
       - "${BACKEND_PORT:-8000}:8000"
@@ -41,11 +41,11 @@ services:
       ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-15}
       REFRESH_TOKEN_EXPIRE_DAYS: ${REFRESH_TOKEN_EXPIRE_DAYS:-30}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost,http://127.0.0.1}
-      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@superozonoglobal.com}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@lanxa.com}
       SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD}
-      EMPRESA_NIT: ${EMPRESA_NIT:-901841798-5}
-      EMPRESA_RAZON_SOCIAL: ${EMPRESA_RAZON_SOCIAL:-TECNOLOGIA E INNOVACION SUPER OZONO S.A.S.}
-      EMPRESA_CIUDAD: ${EMPRESA_CIUDAD:-Armenia, Quindio}
+      EMPRESA_NIT: ${EMPRESA_NIT:-}
+      EMPRESA_RAZON_SOCIAL: ${EMPRESA_RAZON_SOCIAL:-LANXA S.A.S.}
+      EMPRESA_CIUDAD: ${EMPRESA_CIUDAD:-}
       SEED_DEMO: ${SEED_DEMO:-false}
     depends_on:
       db:
@@ -53,7 +53,7 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - superozono-net
+      - lanxa-net
     # entrypoint: wait PG → alembic upgrade head → uvicorn
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/health"]
@@ -64,7 +64,7 @@ services:
 
   db:
     image: postgres:16-alpine
-    container_name: superozono-db
+    container_name: lanxa-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -78,13 +78,13 @@ services:
       timeout: 5s
       retries: 10
     networks:
-      - superozono-net
+      - lanxa-net
     # En prod real no exponer 5432 a host; solo red interna.
     # ports: ["5432:5432"]
 
   redis:
     image: redis:7-alpine
-    container_name: superozono-redis
+    container_name: lanxa-redis
     restart: unless-stopped
     command: ["redis-server", "--appendonly", "yes"]
     volumes:
@@ -95,12 +95,12 @@ services:
       timeout: 3s
       retries: 5
     networks:
-      - superozono-net
+      - lanxa-net
 
 volumes:
   pgdata:
   redisdata:
 
 networks:
-  superozono-net:
+  lanxa-net:
     driver: bridge

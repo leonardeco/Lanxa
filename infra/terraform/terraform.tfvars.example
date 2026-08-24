@@ -1,13 +1,13 @@
 # Copiar a terraform.tfvars (NO commitear) y ajustar.
 
 aws_region   = "us-east-1"
-project_name = "superozono"
+project_name = "lanxa"
 environment  = "prod"
 
 vpc_cidr = "10.20.0.0/16"
 
-db_name           = "superozono_erp"
-db_username       = "superozono"
+db_name           = "lanxa_erp"
+db_username       = "lanxa"
 db_instance_class = "db.t4g.micro"
 db_multi_az       = false
 

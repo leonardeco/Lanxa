@@ -1,4 +1,4 @@
-# Seguridad LAN — Super Ozono ERP
+# Seguridad LAN — Lanxa ERP
 
 Checklist práctico para el PC servidor y la red de oficina.  
 **Modelo:** app en LAN (HTTPS local) + BD en el mismo PC (SQLite hoy; Postgres listo).  
@@ -47,8 +47,8 @@ Checklist práctico para el PC servidor y la red de oficina.
 ### SQLite (producción LAN actual)
 
 - Archivo: `backend\superozono.db`
-- Backup: `backend\scripts\backup_db.py` → `C:\SuperOzono-Backups\*.db.enc`
-- Tarea típica: `SuperOzonoERP-BackupDB` (02:00)
+- Backup: `backend\scripts\backup_db.py` → `C:\Lanxa-Backups\*.db.enc`
+- Tarea típica: `LanxaERP-BackupDB` (02:00)
 
 ### PostgreSQL (tests / futuro prod)
 
@@ -95,7 +95,7 @@ Checklist práctico para el PC servidor y la red de oficina.
 
 | Qué | Dónde |
 |---|---|
-| Local cifrado | `C:\SuperOzono-Backups\` |
+| Local cifrado | `C:\Lanxa-Backups\` |
 | Offsite | OneDrive u otro (`copy_backups_offsite.ps1`) |
 | SQLite restore | `scripts\restore_db.py ruta.db.enc` |
 | Postgres restore | `scripts\restore_pg.py ruta.dump.enc` |
@@ -123,7 +123,7 @@ powershell -ExecutionPolicy Bypass -File ops\diagnostico.ps1
 
 ### Semanal (5 min)
 
-- [ ] ¿Backup reciente en `C:\SuperOzono-Backups` (hoy o ayer)?
+- [ ] ¿Backup reciente en `C:\Lanxa-Backups` (hoy o ayer)?
 - [ ] ¿Offsite con archivos `.enc`?
 - [ ] ¿Windows Update / antivirus OK en el servidor?
 - [ ] ¿Usuarios que ya no trabajan siguen activos?

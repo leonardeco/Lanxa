@@ -31,7 +31,7 @@ def _xlsx(rows, headers=EXPECTED_HEADERS, hoja="Inventario") -> bytes:
 
 FILA_OK = {
     "sku": "IMP-001", "nombre": "Producto Uno", "categoria": "Biocida",
-    "marca": "Superozono", "unidad_medida": "Litro",
+    "marca": "MarcaTest", "unidad_medida": "Litro",
     "precio_venta": 85000, "tarifa_iva": 19, "stock_actual": 120,
     "precio_costo": 32000, "stock_minimo": 20,
 }

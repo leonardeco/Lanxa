@@ -61,7 +61,7 @@ set VITE_API_URL=https://127.0.0.1:8010/api
 npm run dev -- --host 127.0.0.1 --port 5180
 ```
 
-Abrir: `https://127.0.0.1:5180` (aceptar el cert local si es la CA de Super Ozono).
+Abrir: `https://127.0.0.1:5180` (aceptar el certificado local de la CA).
 
 ### 4. Reglas de seguridad
 

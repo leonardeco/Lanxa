@@ -1,4 +1,4 @@
-# Manual de Usuario — Super Ozono ERP
+# Manual de Usuario — Lanxa ERP
 
 Guía práctica para el uso diario del sistema. No necesitas conocimientos técnicos.
 
@@ -6,7 +6,7 @@ Guía práctica para el uso diario del sistema. No necesitas conocimientos técn
 
 ## 1. Entrar al sistema
 
-1. Abre el acceso directo **"Super Ozono ERP"** del escritorio, o el navegador en la
+1. Abre el acceso directo **"Lanxa ERP"** del escritorio, o el navegador en la
    dirección que te indicó el administrador (en la red local suele ser
    `https://192.168.1.131:5173` — el admin te confirma si la IP cambió).
 2. Escribe tu **correo** y **contraseña** y pulsa **Acceder al Sistema**.

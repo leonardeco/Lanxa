@@ -15,7 +15,7 @@ from app.modules.inventario.models import (
 
 
 def _producto(sku, controla_lote=False):
-    return Producto(sku=sku, nombre="Aceite Ozonizado", marca="Superozono",
+    return Producto(sku=sku, nombre="Aceite Ozonizado", marca="MarcaTest",
                     categoria="Coadyuvante", unidad_medida="Litro",
                     controla_lote=controla_lote)
 

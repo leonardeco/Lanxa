@@ -110,7 +110,7 @@ async def test_cxc_update_y_anular(client: AsyncClient, auth_headers: dict):
     cxc = await _crear_cxc(client, auth_headers)
 
     resp = await client.put(
-        f"{BASE}/cxc/{cxc['id']}", json={"marca": "Superozono"}, headers=auth_headers
+        f"{BASE}/cxc/{cxc['id']}", json={"marca": "MarcaTest"}, headers=auth_headers
     )
     assert resp.status_code == 200
     assert resp.json()["marca"] == "Superozono"

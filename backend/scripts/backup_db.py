@@ -32,7 +32,7 @@ def _backup_live_db(db_path: Path, tmp_path: Path) -> None:
 
 def _cleanup_old_backups(backup_dir: Path, retention_days: int) -> None:
     cutoff = datetime.now() - timedelta(days=retention_days)
-    for f in backup_dir.glob("superozono_*.db.enc"):
+    for f in list(backup_dir.glob("lanxa_*.db.enc")) + list(backup_dir.glob("superozono_*.db.enc")):
         if datetime.fromtimestamp(f.stat().st_mtime) < cutoff:
             f.unlink()
 
@@ -56,7 +56,7 @@ def main() -> None:
 
     fernet = Fernet(settings.BACKUP_ENCRYPTION_KEY.encode())
     encrypted = fernet.encrypt(tmp_copy.read_bytes())
-    dest_path = backup_dir / f"superozono_{timestamp}.db.enc"
+    dest_path = backup_dir / f"lanxa_{timestamp}.db.enc"
     dest_path.write_bytes(encrypted)
     tmp_copy.unlink()
 

@@ -8,7 +8,7 @@ Lee DATABASE_URL de backend\\.env (debe ser postgresql...).
 Opcional: variable de entorno PG_BACKUP_DATABASE_URL para respaldar un
 Postgres distinto mientras la app sigue en SQLite.
 
-Salida: {BACKUP_DIR}/superozono_pg_YYYY-MM-DD_HHMMSS.dump.enc
+Salida: {BACKUP_DIR}/lanxa_pg_YYYY-MM-DD_HHMMSS.dump.enc
 """
 from __future__ import annotations
 
@@ -90,7 +90,7 @@ def _find_pg_bin(name: str) -> Path:
 
 def _cleanup_old(backup_dir: Path, retention_days: int) -> None:
     cutoff = datetime.now() - timedelta(days=retention_days)
-    for f in backup_dir.glob("superozono_pg_*.dump.enc"):
+    for f in list(backup_dir.glob("lanxa_pg_*.dump.enc")) + list(backup_dir.glob("superozono_pg_*.dump.enc")):
         if datetime.fromtimestamp(f.stat().st_mtime) < cutoff:
             f.unlink()
 
@@ -157,7 +157,7 @@ def main() -> None:
 
         fernet = Fernet(settings.BACKUP_ENCRYPTION_KEY.encode())
         encrypted = fernet.encrypt(raw)
-        dest = backup_dir / f"superozono_pg_{timestamp}.dump.enc"
+        dest = backup_dir / f"lanxa_pg_{timestamp}.dump.enc"
         dest.write_bytes(encrypted)
         _cleanup_old(backup_dir, settings.BACKUP_RETENTION_DAYS)
         print(f"Backup Postgres creado: {dest} ({len(raw)} bytes dump, {len(encrypted)} cifrado)")

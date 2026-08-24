@@ -365,7 +365,7 @@ async def test_ajuste_salida_no_deja_stock_negativo(client: AsyncClient, auth_he
     stock negativo en silencio."""
     prod = (await client.post(
         "/api/v1/ventas/productos",
-        json={"sku": "AJU-NEG", "nombre": "Producto Ajuste", "marca": "Superozono",
+        json={"sku": "AJU-NEG", "nombre": "Producto Ajuste", "marca": "MarcaTest",
               "precio_venta": "1000", "stock_actual": 5},
         headers=auth_headers,
     )).json()

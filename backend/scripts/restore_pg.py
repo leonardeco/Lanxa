@@ -2,7 +2,7 @@
 Restaura un backup cifrado de PostgreSQL (Fernet + pg_restore).
 
 Uso:
-  venv\\Scripts\\python.exe scripts\\restore_pg.py C:\\SuperOzono-Backups\\superozono_pg_....dump.enc
+  venv\\Scripts\\python.exe scripts\\restore_pg.py C:\\Lanxa-Backups\\lanxa_pg_....dump.enc
 
 Requisitos:
   - BACKUP_ENCRYPTION_KEY en .env

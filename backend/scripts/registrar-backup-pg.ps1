@@ -8,7 +8,7 @@ $ErrorActionPreference = "Stop"
 $Backend = Split-Path -Parent $PSScriptRoot
 $Py = Join-Path $Backend "venv\Scripts\python.exe"
 $Script = Join-Path $PSScriptRoot "backup_pg.py"
-$TaskName = "SuperOzonoERP-BackupPG"
+$TaskName = "LanxaERP-BackupPG"
 
 if (-not (Test-Path $Py)) { throw "No existe $Py — crea el venv del backend" }
 if (-not (Test-Path $Script)) { throw "No existe $Script" }

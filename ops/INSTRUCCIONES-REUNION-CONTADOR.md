@@ -1,9 +1,9 @@
 # Instrucciones — reunión Contador (#1 validar PUC)
 
 **Empresa:** TECNOLOGÍA E INNOVACIÓN SUPER OZONO S.A.S.  
-**ERP:** Super Ozono v0.3.0 (LAN)  
+**ERP:** Lanxa v0.3.0 (LAN)  
 **URL:** https://192.168.1.131:5173  
-**Usuario Contador:** `contador@superozonoglobal.com` (clave temporal en entrega)
+**Usuario Contador:** `contador@lanxa.com` (clave en entrega, no en git)
 
 ---
 

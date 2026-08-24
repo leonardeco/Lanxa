@@ -1,12 +1,12 @@
 @echo off
 setlocal EnableExtensions
-title Super Ozono ERP — Iniciando...
+title Lanxa ERP — Iniciando...
 color 0A
 cls
 
 echo.
 echo  =========================================
-echo   SUPER OZONO GLOBAL — ERP
+echo   LANXA ERP
 echo   Iniciando sistema...
 echo  =========================================
 echo.
@@ -71,7 +71,7 @@ if not exist "%~dp0frontend\node_modules\vite\bin\vite.js" (
 )
 
 :: ── 0b) Auto-setup: migraciones + seed si no hay DB ────
-if not exist "%~dp0backend\superozono.db" (
+if not exist "%~dp0backend\lanxa.db" (
     echo  [SETUP] Base de datos nueva — ejecutando migraciones...
     pushd "%~dp0backend"
     "%~dp0backend\venv\Scripts\python.exe" -m alembic upgrade head
@@ -174,7 +174,7 @@ echo  =========================================
 echo   Sistema iniciado
 echo   Frontend  : https://%BROWSER_HOST%:5173
 echo   Backend   : https://%BROWSER_HOST%:8000/health
-echo   Login     : admin@superozonoglobal.com
+echo   Login     : admin@lanxa.com
 echo  =========================================
 echo.
 echo  Smoke: ops\smoke-diario.bat

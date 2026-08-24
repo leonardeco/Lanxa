@@ -10,7 +10,7 @@ from httpx import AsyncClient
 async def _crear_producto(client, headers, sku="AUD-001"):
     resp = await client.post(
         "/api/v1/ventas/productos",
-        json={"sku": sku, "nombre": "Biocida Auditado", "marca": "Superozono",
+        json={"sku": sku, "nombre": "Biocida Auditado", "marca": "MarcaTest",
               "precio_venta": "10000", "stock_actual": 10},
         headers=headers,
     )

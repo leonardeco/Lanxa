@@ -14,7 +14,7 @@ from app.modules.inventario.lotes import entrada_lote, consumir_fefo, LoteError
 
 
 async def _prod(db, sku):
-    p = Producto(sku=sku, nombre="Aceite Ozonizado", marca="Superozono",
+    p = Producto(sku=sku, nombre="Aceite Ozonizado", marca="MarcaTest",
                  categoria="Coadyuvante", unidad_medida="Litro",
                  controla_lote=True, stock_actual=Decimal("0"))
     db.add(p)

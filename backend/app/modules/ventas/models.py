@@ -75,7 +75,7 @@ class Producto(TenantScoped, Base):
     descripcion: Mapped[str | None] = mapped_column(Text)
     categoria: Mapped[CategoriaProducto] = mapped_column(
         SAEnum(CategoriaProducto), default=CategoriaProducto.BIOCIDA)
-    marca: Mapped[str] = mapped_column(String(100))  # Nombre de marca (Superozono, Ecoozono, etc.)
+    marca: Mapped[str] = mapped_column(String(100))  # Marca comercial del producto
     centro_costo_id: Mapped[int | None] = mapped_column(ForeignKey("centros_costo.id"))
     unidad_medida: Mapped[UnidadMedida] = mapped_column(
         SAEnum(UnidadMedida), default=UnidadMedida.LITRO)

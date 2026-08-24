@@ -33,7 +33,7 @@ limiter.enabled = False
 # evita un falso verde si por config cayera a SQLite (spec T3).
 TEST_DATABASE_URL = os.environ.get(
     "TEST_DATABASE_URL",
-    "postgresql+asyncpg://postgres:postgres@localhost:5432/superozono_test",
+    "postgresql+asyncpg://postgres:postgres@localhost:5432/lanxa_test",
 )
 
 # NullPool: sin reutilización de conexiones entre tests. pytest-asyncio usa un event
@@ -112,8 +112,8 @@ async def setup_db(request):
         await apply_rls_tenant(db, DEFAULT_TENANT_ID)
         db.add(Tenant(
             id=DEFAULT_TENANT_ID,
-            codigo="superozono",
-            razon_social="Super Ozono Test",
+            codigo="lanxa",
+            razon_social="Lanxa Test",
             nit="901841798-5",
             dominio="test.com",
             activo=True,

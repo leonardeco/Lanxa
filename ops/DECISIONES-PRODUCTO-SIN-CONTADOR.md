@@ -11,7 +11,7 @@ Confirmadas por el dueño del proyecto al continuar el backlog sin reunión cont
 |---|---|
 | **Decisión** | No se desarrolla empaquetado Electron |
 | **Motivo** | Uso por **navegador en LAN** (HTTPS). Roadmap web/SaaS (ADR multi-tenant + AWS). Un `.exe` duplica build, updates y soporte. |
-| **Alternativa** | Acceso directo **Super Ozono ERP** → `start.bat` + Chrome/Edge; o favorito a `https://IP:5173` |
+| **Alternativa** | Acceso directo **Lanxa ERP** → `start.bat` + Chrome/Edge; o favorito a `https://IP:5173` |
 | **Reabrir** | Pedir explícitamente “retomar Electron” |
 
 ---

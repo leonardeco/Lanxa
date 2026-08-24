@@ -20,7 +20,7 @@ CLIENTE = {"nit_cc": "900333444", "razon_social": "Agro Distribuidora S.A.S.", "
 async def _producto_lote(client, headers, sku="LOT-1"):
     resp = await client.post(
         "/api/v1/ventas/productos",
-        json={"sku": sku, "nombre": "Aceite Ozonizado", "marca": "Superozono",
+        json={"sku": sku, "nombre": "Aceite Ozonizado", "marca": "MarcaTest",
               "precio_venta": "80000", "stock_actual": 0, "controla_lote": True},
         headers=headers,
     )

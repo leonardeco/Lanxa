@@ -8,7 +8,7 @@ $Backend = Join-Path $Root "backend"
 $Frontend = Join-Path $Root "frontend"
 $CertKey = Join-Path $Root "certs\server.key"
 $CertCrt = Join-Path $Root "certs\server.crt"
-$DbStaging = Join-Path $Backend "superozono_staging.db"
+$DbStaging = Join-Path $Backend "lanxa_staging.db"
 $Py = Join-Path $Backend "venv\Scripts\python.exe"
 
 if (-not (Test-Path $DbStaging)) {
@@ -24,7 +24,7 @@ foreach ($p in 8010, 5180) {
         ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }
 }
 
-$env:DATABASE_URL = "sqlite+aiosqlite:///./superozono_staging.db"
+$env:DATABASE_URL = "sqlite+aiosqlite:///./lanxa_staging.db"
 # Preferir .env.staging si existe (uvicorn/app lee .env por defecto; forzamos URL por env)
 $envFile = Join-Path $Backend ".env.staging"
 

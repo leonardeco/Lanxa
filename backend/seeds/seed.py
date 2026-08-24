@@ -115,23 +115,8 @@ PARAMETROS_NOMINA_DATA = [
 # DATOS DE VENTAS — Productos y Clientes
 # ══════════════════════════════════════════════════════════
 
-PRODUCTOS_DATA = [
-    # (sku, nombre, desc, categoria, marca, unidad, contenido, precio_venta, precio_costo, iva%, stock, stock_min, registro_ica)
-    ("SOZ-001", "Superozono Biocida Concentrado 1L", "Biocida orgánico de ozono concentrado para cultivos extensivos", "Biocida", "Superozono", "Litro", "1L", Decimal("85000.00"), Decimal("32000.00"), Decimal("19.00"), 120, 20, "ICA-2024-001"),
-    ("SOZ-002", "Superozono Biocida Concentrado 20L", "Presentación industrial caneca 20 litros", "Biocida", "Superozono", "Caneca", "20L", Decimal("1350000.00"), Decimal("520000.00"), Decimal("19.00"), 45, 10, "ICA-2024-001"),
-    ("ECO-001", "Ecoozono Desinfectante Agrícola 1L", "Desinfectante ecológico para riego y fumigación", "Desinfectante", "Ecoozono", "Litro", "1L", Decimal("65000.00"), Decimal("25000.00"), Decimal("19.00"), 200, 30, "ICA-2024-003"),
-    ("ECO-002", "Ecoozono Desinfectante Agrícola 5L", "Desinfectante ecológico presentación 5 litros", "Desinfectante", "Ecoozono", "Galón", "5L", Decimal("280000.00"), Decimal("105000.00"), Decimal("19.00"), 85, 15, "ICA-2024-003"),
-    ("AGK-001", "Agroking Fertilizante Ozonizado 1L", "Fertilizante foliar potenciado con ozono", "Fertilizante", "Agroking", "Litro", "1L", Decimal("72000.00"), Decimal("28000.00"), Decimal("5.00"), 150, 25, "ICA-2024-005"),
-    ("AGK-002", "Agroking Fertilizante Ozonizado 20L", "Presentación para cultivos extensivos", "Fertilizante", "Agroking", "Caneca", "20L", Decimal("1150000.00"), Decimal("450000.00"), Decimal("5.00"), 30, 8, "ICA-2024-005"),
-    ("OZE-001", "Ozono Evolution Coadyuvante 1L", "Coadyuvante agrícola de nueva generación", "Coadyuvante", "Ozono Evolution", "Litro", "1L", Decimal("55000.00"), Decimal("20000.00"), Decimal("19.00"), 180, 30, "ICA-2024-007"),
-    ("AVT-001", "Agro Vital Bioestimulante 1L", "Bioestimulante orgánico para floración y fructificación", "Fertilizante", "Agro Vital", "Litro", "1L", Decimal("68000.00"), Decimal("26000.00"), Decimal("5.00"), 140, 20, "ICA-2024-009"),
-    ("AFU-001", "Agro Fusion Mix Integral 1L", "Mezcla integral de nutrientes ozonizados", "Fertilizante", "Agro Fusion", "Litro", "1L", Decimal("78000.00"), Decimal("30000.00"), Decimal("5.00"), 100, 15, "ICA-2024-011"),
-    ("HPO-001", "Hiper Ozono Potente 1L", "Biocida de alta concentración para plagas resistentes", "Biocida", "Hiper Ozono", "Litro", "1L", Decimal("95000.00"), Decimal("38000.00"), Decimal("19.00"), 90, 15, "ICA-2024-013"),
-    ("OZP-001", "Ozono Pro Profesional 1L", "Línea profesional para cultivos tecnificados", "Biocida", "Ozono Pro", "Litro", "1L", Decimal("110000.00"), Decimal("45000.00"), Decimal("19.00"), 60, 10, "ICA-2024-015"),
-    ("OZM-001", "Ozomax Ultra Concentrado 1L", "Máxima concentración de ozono activo", "Biocida", "Ozomax", "Litro", "1L", Decimal("125000.00"), Decimal("50000.00"), Decimal("19.00"), 40, 8, "ICA-2024-017"),
-    ("BIO-001", "Biozono Natural 1L", "Biocida 100% natural para agricultura orgánica", "Biocida", "Biozono", "Litro", "1L", Decimal("75000.00"), Decimal("29000.00"), Decimal("19.00"), 110, 20, "ICA-2024-019"),
-    ("SOZ-003", "Superozono Kit Starter", "Kit de inicio: 3 productos Superozono + dosificador", "Otro", "Superozono", "Caja", "Kit", Decimal("220000.00"), Decimal("85000.00"), Decimal("19.00"), 25, 5, None),
-    ("ECO-003", "Ecoozono Pack Cafetero", "Pack especial para cultivos de café", "Biocida", "Ecoozono", "Caja", "Pack", Decimal("185000.00"), Decimal("72000.00"), Decimal("19.00"), 35, 8, "ICA-2024-003"),
+PRODUCTOS_DATA: list = [
+    # Catálogo vacío a propósito: cada empresa carga los suyos.
 ]
 
 CLIENTES_DATA = [

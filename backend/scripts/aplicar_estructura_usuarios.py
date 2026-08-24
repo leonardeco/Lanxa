@@ -9,8 +9,8 @@ Uso (backend con venv y .env):
 
 Idempotente: actualiza existentes y crea los que falten.
 Escribe las claves temporales nuevas en:
-  C:\\SuperOzono-Backups\\CREDENCIALES-ESTRUCTURA-USUARIOS-NO-SUBIR.txt
-  (y Desktop\\Entrega-SuperOzono-v030\\ si existe)
+  C:\\Lanxa-Backups\\CREDENCIALES-ESTRUCTURA-USUARIOS-NO-SUBIR.txt
+  (y Desktop\\Entrega-Lanxa\\ si existe)
 """
 from __future__ import annotations
 
@@ -43,40 +43,40 @@ def _temp_password(n: int = 14) -> str:
 # Plantilla de la empresa (ajustable)
 DESIRED = [
     {
-        "email": "admin@superozonoglobal.com",
+        "email": "admin@lanxa.com",
         "nombre_completo": "Superusuario del Sistema",
         "rol": "Superusuario",
         "keep_password": True,  # no rotar la del superusuario
     },
     {
-        "email": "directora@superozonoglobal.com",
+        "email": "directora@lanxa.com",
         "nombre_completo": "Directora",
         "rol": "Directora",
-        "aliases": ["administradora@superozonoglobal.com"],
+        "aliases": ["administradora@lanxa.com"],
     },
     {
-        "email": "ceo@superozonoglobal.com",
+        "email": "ceo@lanxa.com",
         "nombre_completo": "CEO",
         "rol": "CEO",
     },
     {
-        "email": "contador@superozonoglobal.com",
+        "email": "contador@lanxa.com",
         "nombre_completo": "Contador",
         "rol": "Contador",
     },
     {
-        "email": "auxiliar1@superozonoglobal.com",
+        "email": "auxiliar1@lanxa.com",
         "nombre_completo": "Auxiliar Contable 1",
         "rol": "Auxiliar Contable",
-        "aliases": ["auxiliar@superozonoglobal.com"],
+        "aliases": ["auxiliar@lanxa.com"],
     },
     {
-        "email": "auxiliar2@superozonoglobal.com",
+        "email": "auxiliar2@lanxa.com",
         "nombre_completo": "Auxiliar Contable 2",
         "rol": "Auxiliar Contable",
     },
     {
-        "email": "auxiliar3@superozonoglobal.com",
+        "email": "auxiliar3@lanxa.com",
         "nombre_completo": "Auxiliar Contable 3",
         "rol": "Auxiliar Contable",
     },
@@ -93,7 +93,7 @@ def main() -> None:
     settings = get_settings()
     engine = create_engine(_sync_url(settings.DATABASE_URL))
     creds_lines: list[str] = [
-        "CREDENCIALES — estructura usuarios Super Ozono ERP",
+        "CREDENCIALES — estructura usuarios Lanxa ERP",
         "URL: https://192.168.1.48:5173",
         "Cada usuario debe cambiar la contraseña al entrar.",
         "",
@@ -152,8 +152,8 @@ def main() -> None:
 
     text_out = "\n".join(creds_lines) + "\n"
     out_paths = [
-        Path(r"C:\SuperOzono-Backups\CREDENCIALES-ESTRUCTURA-USUARIOS-NO-SUBIR.txt"),
-        Path.home() / "Desktop" / "Entrega-SuperOzono-v030" / "CREDENCIALES-ESTRUCTURA-USUARIOS.txt",
+        Path(r"C:\Lanxa-Backups\CREDENCIALES-ESTRUCTURA-USUARIOS-NO-SUBIR.txt"),
+        Path.home() / "Desktop" / "Entrega-Lanxa" / "CREDENCIALES-ESTRUCTURA-USUARIOS.txt",
     ]
     for p in out_paths:
         try:

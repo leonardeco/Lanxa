@@ -19,7 +19,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: superozono_test
+          POSTGRES_DB: lanxa_test
         ports:
           - 5432:5432
         options: >-
@@ -49,7 +49,7 @@ jobs:
 
       - name: Migraciones + alembic check (drift #10)
         env:
-          DATABASE_URL: "postgresql+asyncpg://postgres:postgres@localhost:5432/superozono_migcheck"
+          DATABASE_URL: "postgresql+asyncpg://postgres:postgres@localhost:5432/lanxa_migcheck"
           SECRET_KEY: "ci-secret-key-solo-para-tests-0123456789abcdef"
           SEED_ADMIN_PASSWORD: "ci-admin-pass-no-produccion"
         run: |
@@ -58,7 +58,7 @@ jobs:
           async def main():
               conn = await asyncpg.connect("postgresql://postgres:postgres@localhost:5432/postgres")
               try:
-                  await conn.execute("CREATE DATABASE superozono_migcheck")
+                  await conn.execute("CREATE DATABASE lanxa_migcheck")
               except asyncpg.exceptions.DuplicateDatabaseError:
                   pass
               finally:
@@ -70,8 +70,8 @@ jobs:
 
       - name: pytest (con cobertura)
         env:
-          DATABASE_URL: "postgresql+asyncpg://postgres:postgres@localhost:5432/superozono_test"
-          TEST_DATABASE_URL: "postgresql+asyncpg://postgres:postgres@localhost:5432/superozono_test"
+          DATABASE_URL: "postgresql+asyncpg://postgres:postgres@localhost:5432/lanxa_test"
+          TEST_DATABASE_URL: "postgresql+asyncpg://postgres:postgres@localhost:5432/lanxa_test"
           SECRET_KEY: "ci-secret-key-solo-para-tests-0123456789abcdef"
           SEED_ADMIN_PASSWORD: "ci-admin-pass-no-produccion"
         run: pytest -q --cov=app --cov-report=term-missing:skip-covered

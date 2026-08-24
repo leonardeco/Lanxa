@@ -48,7 +48,7 @@ def _get(url: str, ctx: ssl.SSLContext, headers: dict | None = None) -> tuple[in
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Smoke diario Super Ozono ERP")
+    parser = argparse.ArgumentParser(description="Smoke diario Lanxa ERP")
     parser.add_argument(
         "--strict-alegra",
         action="store_true",
@@ -63,7 +63,7 @@ def main(argv: list[str] | None = None) -> int:
     base = args.base.rstrip("/")
 
     env = _load_env(ENV)
-    email = env.get("SEED_ADMIN_EMAIL", "admin@superozonoglobal.com")
+    email = env.get("SEED_ADMIN_EMAIL", "admin@lanxa.com")
     pwd = env.get("SEED_ADMIN_PASSWORD")
     if not pwd:
         print("FAIL: falta SEED_ADMIN_PASSWORD en backend/.env")

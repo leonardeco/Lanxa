@@ -68,7 +68,7 @@ async def test_puc_crud_completo(client: AsyncClient, auth_headers: dict):
 
 @pytest.mark.asyncio
 async def test_centros_costo_crud(client: AsyncClient, auth_headers: dict):
-    cc = {"codigo": "CC-SUPER", "nombre": "Marca Superozono", "tipo": "Marca"}
+    cc = {"codigo": "CC-TEST", "nombre": "Marca Test", "tipo": "Marca"}
     resp = await client.post(f"{BASE}/centros-costo", json=cc, headers=auth_headers)
     assert resp.status_code == 201, resp.text
     cc_id = resp.json()["id"]
@@ -91,7 +91,7 @@ async def test_centros_costo_crud(client: AsyncClient, auth_headers: dict):
     assert resp.status_code == 404
 
     resp = await client.get(f"{BASE}/centros-costo", headers=auth_headers)
-    assert any(c["codigo"] == "CC-SUPER" for c in resp.json())
+    assert any(c["codigo"] == "CC-TEST" for c in resp.json())
 
 
 @pytest.mark.asyncio

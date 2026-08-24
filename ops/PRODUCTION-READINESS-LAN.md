@@ -1,4 +1,4 @@
-# Production readiness — Super Ozono ERP (LAN v0.3.0)
+# Production readiness — Lanxa ERP (LAN v0.3.0)
 
 Checklist del skill full-dev-team, adaptado a **servidor LAN** (no cloud).  
 **Fecha:** 2026-07-17 · **IP:** `192.168.1.131`

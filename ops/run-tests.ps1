@@ -10,7 +10,7 @@ param(
     [string]$PgPassword = "postgres",
     [string]$PgHost = "localhost",
     [int]$PgPort = 5432,
-    [string]$TestDb = "superozono_test"
+    [string]$TestDb = "lanxa_test"
 )
 
 $ErrorActionPreference = "Stop"

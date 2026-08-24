@@ -19,7 +19,7 @@ async def _crear_producto(client: AsyncClient, auth_headers: dict, sku: str = "T
         json={
             "sku": sku,
             "nombre": "Producto Test",
-            "marca": "Superozono",
+            "marca": "MarcaTest",
             "precio_venta": "50000.00",
             "tarifa_iva": "19.00",
             "stock_actual": 100,

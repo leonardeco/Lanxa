@@ -1,4 +1,4 @@
-# Diagnostico rapido Super Ozono ERP (LAN) - no imprime secretos.
+# Diagnostico rapido Lanxa ERP (LAN) - no imprime secretos.
 #   powershell -ExecutionPolicy Bypass -File ops\diagnostico.ps1
 
 $ErrorActionPreference = "Continue"
@@ -20,7 +20,7 @@ function Bad {
 }
 
 Write-Host ""
-Write-Host "=== Super Ozono ERP - Diagnostico ===" -ForegroundColor Cyan
+Write-Host "=== Lanxa ERP - Diagnostico ===" -ForegroundColor Cyan
 Write-Host ("Carpeta: " + $Root)
 Write-Host ""
 
@@ -210,12 +210,13 @@ try {
     if ($dbVal -match "^sqlite") {
       $dbEngine = "sqlite"
       Ok "Motor: SQLite (LAN tipico)"
-      $sqlitePath = Join-Path $Root "backend\superozono.db"
+      $sqlitePath = Join-Path $Root "backend\lanxa.db"
+      if (-not (Test-Path $sqlitePath)) { $sqlitePath = Join-Path $Root "backend\superozono.db" }
       if (Test-Path $sqlitePath) {
         $sz = (Get-Item $sqlitePath).Length
-        Ok ("superozono.db presente (" + [math]::Round($sz / 1KB, 1) + " KB)")
+        Ok ((Split-Path $sqlitePath -Leaf) + " presente (" + [math]::Round($sz / 1KB, 1) + " KB)")
       } else {
-        Warn "No se encontro backend\superozono.db"
+        Warn "No se encontro backend\lanxa.db"
       }
     } elseif ($dbVal -match "^postgres") {
       $dbEngine = "postgres"
@@ -252,9 +253,10 @@ if ($pgDump) {
 # --- 12 Backups recientes ---
 Write-Host ""
 Write-Host "--- 12 Backups ---"
-$backupDir = "C:\SuperOzono-Backups"
+$backupDir = "C:\Lanxa-Backups"
+if (-not (Test-Path $backupDir)) { $backupDir = "C:\SuperOzono-Backups" }
 if (-not (Test-Path $backupDir)) {
-  Warn "No existe C:\SuperOzono-Backups - configura backup diario"
+  Warn "No existe C:\Lanxa-Backups - configura backup diario"
 } else {
   $encFiles = Get-ChildItem $backupDir -Filter "*.enc" -ErrorAction SilentlyContinue |
     Sort-Object LastWriteTime -Descending
@@ -265,7 +267,7 @@ if (-not (Test-Path $backupDir)) {
     $ageHrs = [math]::Round(((Get-Date) - $latest.LastWriteTime).TotalHours, 1)
     Ok ("Ultimo .enc: " + $latest.Name + " (hace " + $ageHrs + " h)")
     if ($ageHrs -gt 48) {
-      Warn "Backup con mas de 48 h - revisa tarea SuperOzonoERP-BackupDB"
+      Warn "Backup con mas de 48 h - revisa tarea LanxaERP-BackupDB"
     }
     $sqliteEnc = @($encFiles | Where-Object { $_.Name -like "superozono_*.db.enc" }).Count
     $pgEnc = @($encFiles | Where-Object { $_.Name -like "superozono_pg_*.dump.enc" }).Count

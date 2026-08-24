@@ -10,7 +10,7 @@ La suite de API del backend **exige PostgreSQL** (no SQLite): RLS, locks y diale
 
 ```bat
 set PGPASSWORD=postgres
-"C:\Program Files\PostgreSQL\17\bin\psql.exe" -U postgres -h localhost -c "CREATE DATABASE superozono_test;"
+"C:\Program Files\PostgreSQL\17\bin\psql.exe" -U postgres -h localhost -c "CREATE DATABASE lanxa_test;"
 "C:\Program Files\PostgreSQL\17\bin\psql.exe" -U postgres -h localhost -c "CREATE DATABASE superozono_migcheck;"
 ```
 
@@ -42,7 +42,7 @@ powershell -ExecutionPolicy Bypass -File ops\run-tests.ps1 -PytestArgs "tests/te
 
 | Variable | Valor típico |
 |---|---|
-| `TEST_DATABASE_URL` | `postgresql+asyncpg://postgres:postgres@localhost:5432/superozono_test` |
+| `TEST_DATABASE_URL` | `postgresql+asyncpg://postgres:postgres@localhost:5432/lanxa_test` |
 | `DATABASE_URL` | igual (Alembic / app en algunos tests) |
 | `SECRET_KEY` | cadena ≥ 32 chars (el script pone una de test) |
 | `SEED_ADMIN_PASSWORD` | no de fábrica (el script pone una de test) |

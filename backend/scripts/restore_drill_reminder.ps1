@@ -4,28 +4,28 @@
 $ErrorActionPreference = "Stop"
 $repo = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 if (-not (Test-Path (Join-Path $repo "ops\ENTREGA-OPERATIVA-v030.md"))) {
-    $repo = "C:\Users\MI PC\Documents\PROYECTOS\superozono-erp"
+    $repo = "C:\Users\MI PC\Documents\Lanxa ERP"
 }
 
 $checklist = Join-Path $repo "ops\ENTREGA-OPERATIVA-v030.md"
-$logDir = "C:\SuperOzono-Backups"
+$logDir = "C:\Lanxa-Backups"
 New-Item -ItemType Directory -Force -Path $logDir | Out-Null
 $stamp = Get-Date -Format "yyyy-MM-dd_HHmmss"
 $log = Join-Path $logDir "restore_drill_reminder_$stamp.txt"
 
 @(
-    "Super Ozono ERP — recordatorio drill de restore"
+    "Lanxa ERP — recordatorio drill de restore"
     "Fecha: $(Get-Date -Format o)"
     ""
     "1) Leer seccion #7a en: $checklist"
     "2) Ejecutar el drill FUERA de horario (stop.bat -> restore_db.py -> verificar)."
     "3) Anotar resultado en la tabla del checklist."
-    "4) Confirmar que existen backups en C:\SuperOzono-Backups y en OneDrive offsite."
+    "4) Confirmar que existen backups en C:\Lanxa-Backups y en OneDrive offsite."
     ""
     "Backups locales recientes:"
 ) | Set-Content -Path $log -Encoding UTF8
 
-Get-ChildItem "C:\SuperOzono-Backups\*.enc" -ErrorAction SilentlyContinue |
+Get-ChildItem "C:\Lanxa-Backups\*.enc" -ErrorAction SilentlyContinue |
     Sort-Object LastWriteTime -Descending |
     Select-Object -First 5 |
     ForEach-Object { Add-Content $log ("  - " + $_.Name + "  " + $_.LastWriteTime) }

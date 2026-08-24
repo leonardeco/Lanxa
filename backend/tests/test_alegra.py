@@ -36,7 +36,7 @@ async def _crear_producto(client, headers, **overrides):
     payload = {
         "sku": "ALG-001",
         "nombre": "Biocida 1L",
-        "marca": "Superozono",
+        "marca": "MarcaTest",
         "precio_venta": "50000.00",
         **overrides,
     }
@@ -64,14 +64,14 @@ async def test_sin_credenciales_status_no_configurado(client: AsyncClient, auth_
 async def test_status_conectado(client: AsyncClient, auth_headers: dict, alegra_credenciales, monkeypatch):
     async def fake_get(path, params=None):
         assert path == "/company"
-        return {"name": "Super Ozono", "identification": "901841798", "plan": {"name": "Pyme"}}
+        return {"name": "Lanxa", "identification": "901841798", "plan": {"name": "Pyme"}}
 
     monkeypatch.setattr(alegra_router, "alegra_get", fake_get)
     resp = await client.get(f"{BASE}/status", headers=auth_headers)
     assert resp.status_code == 200
     data = resp.json()
     assert data["conectado"] is True
-    assert data["empresa"] == "Super Ozono"
+    assert data["empresa"] == "Lanxa"
     assert data["plan"] == "Pyme"
 
 

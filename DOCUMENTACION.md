@@ -1,4 +1,4 @@
-# Super Ozono Global — ERP: Documentación Técnica
+# Lanxa ERP — Documentación Técnica
 
 **Empresa:** TECNOLOGIA E INNOVACION SUPER OZONO S.A.S.
 **NIT:** 901841798-5
@@ -28,7 +28,7 @@
 
 ## 1. Descripción general
 
-ERP interno para la gestión contable y comercial de Super Ozono Global. Diseñado para red local (LAN): un PC servidor corre backend + frontend; el resto abre el navegador.
+ERP interno para la gestión contable y comercial de LANXA S.A.S. Diseñado para red local (LAN): un PC servidor corre backend + frontend; el resto abre el navegador.
 
 | Perfil de negocio | Rol en el ERP | Acceso típico |
 |---|---|---|
@@ -39,7 +39,7 @@ ERP interno para la gestión contable y comercial de Super Ozono Global. Diseña
 | Auxiliares (×3) | **Auxiliar Contable** | Contabilidad operativa + ventas/compras/cartera |
 
 **URL LAN actual (PC servidor):** `https://192.168.1.131:5173` · API `https://192.168.1.131:8000`  
-**Arranque:** acceso escritorio *Super Ozono ERP* (`start.bat`) / `stop.bat`.  
+**Arranque:** acceso escritorio *Lanxa ERP* (`start.bat`) / `stop.bat`.  
 Detalle ops: `ops/ESTADO-OPERATIVO-PC.md`.
 
 ---
@@ -214,7 +214,7 @@ Lanxa/
 
 ```env
 # Base de datos (dev: SQLite / prod: PostgreSQL)
-DATABASE_URL=sqlite+aiosqlite:///./superozono.db
+DATABASE_URL=sqlite+aiosqlite:///./lanxa.db
 REDIS_URL=redis://localhost:6379/0
 
 # Seguridad
@@ -253,14 +253,14 @@ ALEGRA_EMAIL=
 ALEGRA_TOKEN=
 
 # Backups (solo SQLite — scripts/backup_db.py)
-BACKUP_DIR=C:/SuperOzono-Backups
+BACKUP_DIR=C:/Lanxa-Backups
 BACKUP_ENCRYPTION_KEY=<clave-fernet-generada>
 BACKUP_RETENTION_DAYS=30
 ```
 
 **En el PC servidor (reemplazar IP):**
 ```env
-DATABASE_URL=postgresql+asyncpg://usuario:password@localhost:5432/superozono
+DATABASE_URL=postgresql+asyncpg://usuario:password@localhost:5432/lanxa_erp
 CORS_ORIGINS=http://192.168.X.X:5173
 ```
 
@@ -348,7 +348,7 @@ Servicios disponibles:
 
 4. Ejecutar `start.bat` en el servidor. La primera vez genera automáticamente un certificado HTTPS local (`certs/`, ver sección siguiente) — las veces siguientes lo reutiliza.
 
-5. (Opcional) Ejecutar `crear-acceso-escritorio.bat` para crear un ícono "Super Ozono ERP" en el escritorio con el logo de la empresa, que ejecuta `start.bat`. El script usa `$PSScriptRoot` (la carpeta donde vive el propio script), así que funciona igual sin importar en qué PC o ruta esté copiado el proyecto — solo hay que ejecutarlo una vez en cada PC servidor nuevo, no se puede copiar el acceso directo ya creado de un PC a otro porque apunta a una ruta absoluta.
+5. (Opcional) Ejecutar `crear-acceso-escritorio.bat` para crear un ícono "Lanxa ERP" en el escritorio con el logo de la empresa, que ejecuta `start.bat`. El script usa `$PSScriptRoot` (la carpeta donde vive el propio script), así que funciona igual sin importar en qué PC o ruta esté copiado el proyecto — solo hay que ejecutarlo una vez en cada PC servidor nuevo, no se puede copiar el acceso directo ya creado de un PC a otro porque apunta a una ruta absoluta.
 
 ### HTTPS — instalar el certificado como confiable (una vez por PC)
 
@@ -436,10 +436,10 @@ Entrega (cuando se decida): Escritorio `Entrega-SuperOzono-v030\` — **entrega 
 
 | Tabla / mecanismo | Descripción |
 |---|---|
-| `tenants` | Una fila por empresa/suscriptor (`codigo`, `razon_social`, `nit`, `activo`). Tenant #1 (`superozono`) es la empresa por defecto en el despliegue LAN; tenants adicionales (p.ej. `peru`) se crean vía `POST /api/v1/tenants/onboard` |
+| `tenants` | Una fila por empresa/suscriptor (`codigo`, `razon_social`, `nit`, `activo`). Tenant #1 (`lanxa`) es la empresa por defecto en el despliegue LAN; tenants adicionales se crean vía `POST /api/v1/tenants/onboard` |
 | `tenant_id` | Columna presente en prácticamente todas las tablas de negocio (mixin `TenantScoped`) — cada fila pertenece a un único tenant, con `UniqueConstraint`s compuestos (`tenant_id`, clave de negocio) donde aplica, no globales |
 | RLS (Row-Level Security) | Solo PostgreSQL: política `tenant_isolation` sobre las tablas listadas en `RLS_TABLES`, forzada con `FORCE ROW LEVEL SECURITY`. `apply_rls_tenant()` fija `set_config('app.tenant_id', …)` al abrir cada sesión y de nuevo tras autenticar. No-op en SQLite (despliegue LAN) — el aislamiento ahí depende exclusivamente de que cada query use `tenant_clause`/`for_tenant`/`get_for_tenant` |
-| Auditoría cross-tenant (2026-07-24) | Los 8 módulos de negocio fueron auditados y corregidos para filtrar consistentemente por `tenant_id` en cada consulta (ver `BITACORA.md`, sesión "Auditoría de aislamiento cross-tenant") |
+| Auditoría cross-tenant (2026-07-24) | Los 8 módulos de negocio fueron auditados y corregidos para filtrar consistentemente por `tenant_id` en cada consulta (auditoría de aislamiento cross-tenant, 2026-07) |
 
 ### Módulo Contabilidad (`contabilidad/models.py`)
 
@@ -810,7 +810,7 @@ El seeder (`seeds/seed.py`) se ejecuta automáticamente al iniciar el backend. E
 
 ### Deuda técnica / mejoras pendientes
 
-- ~~Limpieza de refresh tokens expirados; `int(sub)` 500; guard de "último admin"; enumeración en login; paginación~~ → ✅ **todos resueltos el 2026-07-02** (ver BITACORA.md).
+- ~~Limpieza de refresh tokens expirados; `int(sub)` 500; guard de "último admin"; enumeración en login; paginación~~ → ✅ **todos resueltos el 2026-07-02** .
 - ~~Alembic~~ → ✅ configurado (async) con migración baseline el 2026-07-02; ~~datetime tz-aware~~ → ✅ helper `utcnow()` en `core/time.py`.
 - ~~Locks de concurrencia (`with_for_update`) en abonos y stock~~ → ✅ **2026-07-15** (#12 / #12a).
 - ~~passlib → bcrypt directo~~ → ✅ **2026-07-03**.
@@ -825,10 +825,10 @@ El seeder (`seeds/seed.py`) se ejecuta automáticamente al iniciar el backend. E
 - ~~Devoluciones (notas crédito/débito) y cotizaciones~~ → ✅ **Completados** (devoluciones 2026-07-03, cotizaciones 2026-07-05)
 - ~~Auditoría de cambios (audit log)~~ → ✅ **Completado 2026-07-05**; Electron — Fase 4
 - **Run 1 — Fundación Postgres (2026-07-14, en curso):** primera etapa de la migración a SaaS multi-tenant (ADR 0001). La suite de tests y el CI pasan de SQLite in-memory a **PostgreSQL** (motor de prod/nube, requisito de RLS): `conftest.py` toma `TEST_DATABASE_URL`, el CI levanta un `services: postgres` y valida `alembic upgrade head` + `alembic check` (cierra el drift #10). **SQLite sigue soportado para el despliegue LAN de v0.3.0.** Sin lógica de tenant todavía (Runs 2–5). Verificación por CI. Ver `docs/hydraia/plans/2026-07-14-fundacion-postgres.md`.
-- ~~Seeder de datos demo (50 clientes, 200 ventas)~~ → ✅ **Completado 2026-07-14**: CLI independiente `backend/seeds/seed_demo.py` que llena una BD demo dedicada (`superozono_demo.db`, engine propio + guard anti-producción) con ~50 clientes y ~200 ventas mixtas (confirmadas/borrador/anuladas vía los servicios de dominio reales + abono demo para el aging de Cartera). Idempotente con `--clean`, reproducible con `--seed`; 8 tests pytest en `backend/tests/test_seed_demo.py`. Rama `feat/seeder-datos-demo`.
+- ~~Seeder de datos demo (50 clientes, 200 ventas)~~ → ✅ **Completado 2026-07-14**: CLI independiente `backend/seeds/seed_demo.py` que llena una BD demo dedicada (`lanxa_demo.db`, engine propio + guard anti-producción) con ~50 clientes y ~200 ventas mixtas (confirmadas/borrador/anuladas vía los servicios de dominio reales + abono demo para el aging de Cartera). Idempotente con `--clean`, reproducible con `--seed`; 8 tests pytest en `backend/tests/test_seed_demo.py`. Rama `feat/seeder-datos-demo`.
 - ~~**#12a Numeración concurrente-safe**~~ → ✅ **Completado 2026-07-15**: `document_sequences` (PK `prefix`, `last_value`) + `next_sequential_numero` con `with_for_update` y reintento por savepoint ante `IntegrityError`; siembra desde MAX de la columna de negocio para no colisionar con documentos legacy. Migración Alembic `d5e6f7a8b9c0`. Tests unitarios en `backend/tests/test_numbering.py`.
 - ~~**#12 Locks en stock y abonos**~~ → ✅ **Completado 2026-07-15**: `SELECT … FOR UPDATE` en producto (`registrar_movimiento`), lotes (entrada/FEFO), productos al confirmar venta (orden por id), CxC/CxP al abonar y al anular pagos. Salidas rechazan stock negativo (`StockError`) salvo `permitir_stock_negativo=True`. Tests en `backend/tests/test_locks_stock.py`.
-- **Run 2 — Tenancy foundation (2026-07-15):** modelo `Tenant` + mixin `TenantScoped` (`tenant_id`) en tablas de negocio; migración `e6f7a8b9c0d1` (seed empresa #1 `superozono`); JWT con claim `tenant_id`; `get_current_user` fija contextvar; `document_sequences` PK `(tenant_id, prefix)`. Plan: `docs/hydraia/plans/2026-07-15-run2-tenancy-foundation.md`.
+- **Run 2 — Tenancy foundation (2026-07-15):** modelo `Tenant` + mixin `TenantScoped` (`tenant_id`) en tablas de negocio; migración `e6f7a8b9c0d1` (seed empresa #1 `lanxa`); JWT con claim `tenant_id`; `get_current_user` fija contextvar; `document_sequences` PK `(tenant_id, prefix)`. Plan: `docs/hydraia/plans/2026-07-15-run2-tenancy-foundation.md`.
 - **Run 3 — RLS PostgreSQL (2026-07-15):** migración `f7a8b9c0d1e2` (ENABLE+FORCE RLS + policy `tenant_isolation` solo en PG); `apply_rls_tenant` / `set_config('app.tenant_id')` en `get_db` y post-login; tests de aislamiento en `test_tenancy.py`. SQLite LAN: no-op. Plan: `docs/hydraia/plans/2026-07-15-run3-rls-postgres.md`.
 - **Run 4 — Filtros tenant + HTTP (2026-07-15):** helpers `for_tenant` / `get_for_tenant` / stamp `before_insert`; listados/get de productos, clientes, ventas, compras, proveedores, PUC, centros, periodos, CxC/CxP, usuarios, aging; tests `test_tenant_http_isolation.py`. Plan: `docs/hydraia/plans/2026-07-15-run4-tenant-filters.md`.
 - **Run 5 — Onboarding + uniques compuestos (2026-07-15):** migración `a0b1c2d3e4f5` UNIQUE(tenant_id, sku/email/nit/numero…); `POST /api/v1/tenants/onboard` (solo Admin tenant #1) crea empresa + Admin; `GET /api/v1/tenants/`; tests `test_tenant_onboard.py`. Plan: `docs/hydraia/plans/2026-07-15-run5-onboarding-uniques.md`.
@@ -856,10 +856,10 @@ El seeder (`seeds/seed.py`) se ejecuta automáticamente al iniciar el backend. E
 - ~~**#21 Electron**~~ → ✅ **DESCARTADO 2026-07-17** (`ops/DECISIONES-PRODUCTO-SIN-CONTADOR.md`).
 - ~~**#21b multi-bodega**~~ → ✅ **NO en v0.3** (mono-bodega).
 - ~~**#7 plan de entrega**~~ → ✅ `ops/ENTREGA-7-USUARIOS.md` + carpeta Escritorio; falta solo la ejecución humana (repartir tarjetas).
-- ~~**Smoke diario + Alegra en smoke**~~ → ✅ **2026-07-17**: `ops/smoke-diario.bat`, `registrar-smoke-diario.ps1`, `smoke-prod.py` chequea `/alegra/status` (informativo o `--strict-alegra`). Tarea Windows **SuperOzonoERP-SmokeDiario** 08:00.
+- ~~**Smoke diario + Alegra en smoke**~~ → ✅ **2026-07-17**: `ops/smoke-diario.bat`, `registrar-smoke-diario.ps1`, `smoke-prod.py` chequea `/alegra/status` (informativo o `--strict-alegra`). Tarea Windows **LanxaERP-SmokeDiario** 08:00.
 - ~~**Fix arranque LAN (encoding .env + IP)**~~ → ✅ **2026-07-17**: `backend\.env` reescrito UTF-8; IP **`192.168.1.131`**; `ops/sync-lan-ip.ps1` + `start.bat` valida config, espera health `:8000`, regenera cert. Smoke + login UI Superusuario verificados (usuario dentro del ERP).
 - ~~**Informe gerencial + PPTX + acta Contador + resumen admin**~~ → ✅ **2026-07-21** (DOCUMENTACION §13 #59–#61). Material en Escritorio; generadores locales en `docs/generate-*`.
 - **Pendientes vivos:** ver `PENDIENTES.md` (**46ª rev, 2026-07-21**) — Contador #1–3/#8 (acta lista para firmar); #2/#4 datos; **#34 Excel empresa** y **#35 screenshots ERP actual** (solicitados a admin); #7 ejecutar entrega; token Alegra; resolución DIAN / texto Habeas.
 - ~~**Run 6 — tenant Perú + Ventas Diarias**~~ → ✅ **Mergeado 2026-07-24** (`run6-peru-ventas-diarias`): tenant Perú (`codigo="peru"`) onboardeado en producción real vía `POST /api/v1/tenants/onboard`; módulo `ventas_diarias` nuevo (registro diario + pagos sueltos + resumen mensual). Revisión final encontró un hallazgo Crítico (aislamiento cross-tenant fuera del alcance de esta rama) documentado como seguimiento inmediato.
-- ~~**Auditoría de aislamiento cross-tenant**~~ → ✅ **Mergeado y pusheado 2026-07-27** (`fix-cross-tenant-audit`): 7 módulos de negocio (`contabilidad`, `alegra`, `inventario`, `compras`, `reportes`, `ventas`, `auditoria`) corregidos para filtrar consistentemente por `tenant_id`; revisión final encontró 4 hallazgos Críticos adicionales una capa más abajo (`contabilidad/asientos.py`, `ventas/services.py`), también corregidos. Suite completa 394/394 (+1 `xfail` documentado — `UniqueConstraint`s globales en `contabilidad` pendientes de migración compuesta con `tenant_id`, ver `BITACORA.md`).
-- **En curso, no mergeado (`fix-login-tenant-domain`):** el login ahora resuelve el tenant por el dominio del email antes de buscar el `Usuario` (evita la ambigüedad cuando dos tenants comparten un email). Bloqueado por confirmar el dominio de correo real del tenant Perú y una verificación visual en navegador pendiente — ver `BITACORA.md`.
+- ~~**Auditoría de aislamiento cross-tenant**~~ → ✅ **Mergeado y pusheado 2026-07-27** (`fix-cross-tenant-audit`): 7 módulos de negocio (`contabilidad`, `alegra`, `inventario`, `compras`, `reportes`, `ventas`, `auditoria`) corregidos para filtrar consistentemente por `tenant_id`; revisión final encontró 4 hallazgos Críticos adicionales una capa más abajo (`contabilidad/asientos.py`, `ventas/services.py`), también corregidos. Suite completa 394/394 (+1 `xfail` documentado — `UniqueConstraint`s globales en `contabilidad` pendientes de migración compuesta con `tenant_id`).
+- **En curso, no mergeado (`fix-login-tenant-domain`):** el login ahora resuelve el tenant por el dominio del email antes de buscar el `Usuario` (evita la ambigüedad cuando dos tenants comparten un email). Bloqueado por confirmar el dominio de correo real del tenant Perú y una verificación visual en navegador pendiente.

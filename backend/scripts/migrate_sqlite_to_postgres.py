@@ -250,7 +250,7 @@ def migrate(
 
 
 def main() -> None:
-    p = argparse.ArgumentParser(description="Migrate Super Ozono SQLite → PostgreSQL")
+    p = argparse.ArgumentParser(description="Migrate Lanxa SQLite → PostgreSQL")
     p.add_argument(
         "--sqlite",
         type=Path,

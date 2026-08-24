@@ -58,7 +58,7 @@ python scripts/migrate_sqlite_to_postgres.py \
 
 | Tema | Detalle |
 |---|---|
-| `tenant_id` | Si falta en origen, se fuerza a `1` (Super Ozono) |
+| `tenant_id` | Si falta en origen, se fuerza a `1` (tenant LAN) |
 | `alembic_version` | No se copia |
 | Re-runs | `ON CONFLICT DO NOTHING` (no duplica PK) |
 | Secuencias | Se resetean al MAX post-carga |

@@ -22,7 +22,7 @@ from sqlalchemy.sql import Select
 from app.core.database import Base
 from app.core.time import utcnow
 
-# 1 = Super Ozono (tenant LAN / empresa #1). Constante de seed y fallback.
+# 1 = tenant LAN / empresa #1. Constante de seed y fallback.
 DEFAULT_TENANT_ID = 1
 
 _tenant_ctx: ContextVar[int | None] = ContextVar("tenant_id", default=None)
@@ -150,7 +150,7 @@ class Tenant(Base):
     nit: Mapped[str | None] = mapped_column(String(30))
     ciudad: Mapped[str | None] = mapped_column(String(100))
     # dominio: parte después del @ en los emails de este tenant (minúsculas, sin @).
-    # Ej: "superozonoglobal.com". Se usa para resolver tenant en el login antes
+    # Ej: "lanxa.com". Se usa para resolver tenant en el login antes
     # de buscar al usuario — evita la colisión de emails iguales entre tenants.
     # Debe almacenarse ya normalizado (minúsculas). Null solo si el tenant aún
     # no fue configurado; en ese caso el login falla con error claro.

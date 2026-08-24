@@ -58,7 +58,7 @@ async def _get_or_create_producto(db, nombre: str, cache: dict) -> int:
     if existente:
         cache[nombre_norm] = existente.id
         return existente.id
-    p = Producto(sku=sku, nombre=nombre_norm, marca="Super Ozono Ecuador")
+    p = Producto(sku=sku, nombre=nombre_norm, marca="Lanxa")
     db.add(p)
     await db.flush()
     cache[nombre_norm] = p.id

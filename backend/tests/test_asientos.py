@@ -19,7 +19,7 @@ async def _setup_venta(client, headers, *, confirmar=True, retiene_iva=False):
     )).json()
     prod = (await client.post(
         "/api/v1/ventas/productos",
-        json={"sku": "AST-001", "nombre": "Biocida", "marca": "Superozono",
+        json={"sku": "AST-001", "nombre": "Biocida", "marca": "MarcaTest",
               "precio_venta": "100000", "stock_actual": 50},
         headers=headers,
     )).json()

@@ -1,4 +1,4 @@
-# Checklist go-live diario — Super Ozono ERP (LAN)
+# Checklist go-live diario — Lanxa ERP (LAN)
 
 **Sin Contador.** Operación del día a día en el PC servidor.
 
@@ -10,7 +10,7 @@ Más detalle: `ops/ESTADO-OPERATIVO-PC.md`
 
 ## Cada mañana (2–5 min)
 
-- [ ] Arrancar ERP: acceso escritorio **Super Ozono ERP** o `start.bat`
+- [ ] Arrancar ERP: acceso escritorio **Lanxa ERP** o `start.bat`
 - [ ] Smoke diario (doble clic o consola):
 
 ```bat
@@ -58,7 +58,7 @@ Seguridad LAN (firewall mental, Wi‑Fi, backups, VPN): `ops/SEGURIDAD-LAN.md`
 powershell -ExecutionPolicy Bypass -File ops\registrar-smoke-diario.ps1
 ```
 
-Log: `%USERPROFILE%\SuperOzono-Smoke-Logs\smoke-latest.txt`
+Log: `%USERPROFILE%\Lanxa-Smoke-Logs\smoke-latest.txt`
 
 ---
 
@@ -105,7 +105,7 @@ Migración reciente de ejemplo: `c6d7e8f9a0b1` (Habeas Data en clientes).
 
 - [ ] `powershell -ExecutionPolicy Bypass -File ops\run-tests.ps1` (requiere Postgres local)
 - [ ] Frontend: `cd frontend && npm.cmd test -- --run`
-- [ ] Revisar carpeta `C:\SuperOzono-Backups` y offsite
+- [ ] Revisar carpeta `C:\Lanxa-Backups` y offsite
 
 ---
 

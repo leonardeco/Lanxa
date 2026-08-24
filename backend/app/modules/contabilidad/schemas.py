@@ -1,5 +1,5 @@
 """
-Super Ozono Global — Pydantic Schemas para la API REST
+Lanxa — Pydantic Schemas para la API REST
 """
 
 from pydantic import BaseModel, Field
@@ -331,7 +331,7 @@ class HealthResponse(BaseModel):
     status: str = "ok"
     database: str = "connected"
     version: str = "0.1.0"
-    empresa: str = "Super Ozono Global"
+    empresa: str = "LANXA S.A.S."
 
 
 # ══════════════════════════════════════════════════════════

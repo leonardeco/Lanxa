@@ -15,8 +15,8 @@ param(
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $PSScriptRoot
 $Bat = Join-Path $Root "ops\smoke-diario.bat"
-$TaskName = "SuperOzonoERP-SmokeDiario"
-$LogDir = Join-Path $env:USERPROFILE "SuperOzono-Smoke-Logs"
+$TaskName = "LanxaERP-SmokeDiario"
+$LogDir = Join-Path $env:USERPROFILE "Lanxa-Smoke-Logs"
 $LogFile = Join-Path $LogDir "smoke-latest.txt"
 
 if (-not (Test-Path $Bat)) {

@@ -26,7 +26,7 @@ class RegistroAuditoria(TenantScoped, Base):
     accion: Mapped[str] = mapped_column(String(30), index=True)   # Crear/Actualizar/Desactivar/...
     entidad: Mapped[str] = mapped_column(String(50), index=True)  # Producto, Cliente, ...
     entidad_id: Mapped[int | None] = mapped_column()
-    descripcion: Mapped[str] = mapped_column(String(300))         # "Producto SOZ-001 — Biocida 1L"
+    descripcion: Mapped[str] = mapped_column(String(300))         # "Producto PRD-001 — descripción"
     cambios: Mapped[str | None] = mapped_column(Text)             # JSON del diff (solo updates)
     ip: Mapped[str | None] = mapped_column(String(45))            # IP del request (IPv4/IPv6)
 

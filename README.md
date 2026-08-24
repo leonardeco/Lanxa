@@ -399,10 +399,10 @@ pip install -r requirements.txt -r requirements-dev.txt
 ```bash
 # Backend — requiere PostgreSQL
 docker run -d --name pg-test -p 5432:5432 \
-  -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=superozono_test postgres:16-alpine
+  -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=lanxa_test postgres:16-alpine
 
 cd backend
-export TEST_DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/superozono_test
+export TEST_DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/lanxa_test
 pytest -v
 
 # Análisis estático backend
@@ -583,7 +583,6 @@ El sistema tiene **5 roles**. Detalle canónico en `DOCUMENTACION.md` §7:
 | [`MANUAL-DE-USUARIO.md`](./MANUAL-DE-USUARIO.md) | Usuarios finales — guía por flujos (vender, cobrar, comprar, pagar) |
 | [`DESPLIEGUE.md`](./DESPLIEGUE.md) | Administrador — checklist de actualización y rollback con backups |
 | [`MAPEO-PUC-PARA-CONTADOR.md`](./MAPEO-PUC-PARA-CONTADOR.md) | Contador(a) — validación del mapeo contable del motor de asientos |
-| [`BITACORA.md`](./BITACORA.md) | Desarrollo — registro de sesiones |
 | [`PENDIENTES.md`](./PENDIENTES.md) | Todos — backlog priorizado: qué falta y de quién depende |
 | [`DOCUMENTACION.md`](./DOCUMENTACION.md) | Técnico — arquitectura, modelos, seguridad, multi-PC |
 

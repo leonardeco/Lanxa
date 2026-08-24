@@ -9,7 +9,7 @@ function Test-Port([int]$Port) {
   return [bool](netstat -ano 2>$null | Select-String (":" + $Port + "\s") | Select-String "LISTENING")
 }
 
-Write-Host "=== Super Ozono - Abrir login Chrome ===" -ForegroundColor Cyan
+Write-Host "=== Lanxa - Abrir login Chrome ===" -ForegroundColor Cyan
 
 # Backend
 if (-not (Test-Port 8000)) {
@@ -50,7 +50,7 @@ if (-not $ready) {
   exit 1
 }
 
-$email = "admin@superozonoglobal.com"
+$email = "admin@lanxa.com"
 $password = ""
 Get-Content (Join-Path $Root "backend\.env") -Encoding UTF8 | ForEach-Object {
   if ($_ -match "^SEED_ADMIN_EMAIL=(.*)$") { $email = $Matches[1].Trim().Trim([char]34) }

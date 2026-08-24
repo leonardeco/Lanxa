@@ -1,4 +1,4 @@
-# Terraform — Super Ozono ERP (Fase 3 AWS foundation)
+# Terraform — Lanxa ERP (Fase 3 AWS foundation)
 
 Infraestructura como código para el **runbook** multi-tenant en AWS:
 

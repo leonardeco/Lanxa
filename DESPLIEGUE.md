@@ -50,7 +50,7 @@ servidor.
   cd backend
   venv\Scripts\python.exe scripts\backup_db.py
   ```
-- [ ] Verificar que existe el backup del día en `C:\SuperOzono-Backups`
+- [ ] Verificar que existe el backup del día en `C:\Lanxa-Backups`
 - [ ] Copiar la carpeta de backups (y `BACKUP_ENCRYPTION_KEY` en un gestor de
   contraseñas) a un destino **fuera de este PC** — sin esto, un daño de disco
   pierde BD + backups juntos
@@ -115,7 +115,7 @@ servidor.
 - [ ] Si la BD quedó dañada, restaurar el backup:
   ```bat
   cd backend
-  venv\Scripts\python.exe scripts\restore_db.py C:\SuperOzono-Backups\superozono_<fecha>.db.enc
+  venv\Scripts\python.exe scripts\restore_db.py C:\Lanxa-Backups\lanxa_<fecha>.db.enc
   ```
   (el script guarda una copia `.bak-<fecha>` de la BD actual antes de sobreescribir)
 - [ ] `start.bat` y verificar login
@@ -129,16 +129,16 @@ servidor.
 
 | Tarea | Programación | Comando |
 |---|---|---|
-| `SuperOzonoERP-BackupDB` | Diario 2:00am | `backend\venv\Scripts\python.exe backend\scripts\backup_db.py` |
-| `SuperOzonoERP-BackupOffsite` | Diario 2:15am | `backend\scripts\copy_backups_offsite.ps1` → OneDrive (o USB/NAS con `-Dest`) |
-| `SuperOzonoERP-PurgaAuditoria` | Mensual (día 1, 3:00am) | `backend\scripts\run_purge_auditoria.bat` |
+| `LanxaERP-BackupDB` | Diario 2:00am | `backend\venv\Scripts\python.exe backend\scripts\backup_db.py` |
+| `LanxaERP-BackupOffsite` | Diario 2:15am | `backend\scripts\copy_backups_offsite.ps1` → OneDrive (o USB/NAS con `-Dest`) |
+| `LanxaERP-PurgaAuditoria` | Mensual (día 1, 3:00am) | `backend\scripts\run_purge_auditoria.bat` |
 
 Ver detalle offsite y clave de cifrado: `backend\scripts\LEEME-BACKUPS-OFFSITE.md` (pendiente #5).
 
 > **Purga de auditoría (#28):** archiva y borra los registros del log de auditoría
 > anteriores a `AUDITORIA_RETENTION_DAYS` (por defecto 1825 ≈ 5 años, editable en
 > `.env`). Antes de borrar, exporta los registros **cifrados** a
-> `C:\SuperOzono-Backups\auditoria\auditoria_purga_<fecha>.json.enc` — por eso
+> `C:\Lanxa-Backups\auditoria\auditoria_purga_<fecha>.json.enc` — por eso
 > **requiere `BACKUP_ENCRYPTION_KEY` definida** (si falta, aborta sin borrar nada).
 > La propia purga queda registrada en el log de auditoría.
 

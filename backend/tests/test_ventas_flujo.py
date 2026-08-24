@@ -9,8 +9,8 @@ from httpx import AsyncClient
 
 PRODUCTO_BASE = {
     "sku": "BIO-001",
-    "nombre": "Biocida Superozono 20L",
-    "marca": "Superozono",
+    "nombre": "Biocida prueba 20L",
+    "marca": "MarcaTest",
     "precio_venta": "150000.00",
     "stock_actual": 50,
     "stock_minimo": 5,

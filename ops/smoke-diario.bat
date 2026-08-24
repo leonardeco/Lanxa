@@ -1,5 +1,5 @@
 @echo off
-REM Smoke diario Super Ozono ERP (doble clic o Task Scheduler)
+REM Smoke diario Lanxa ERP (doble clic o Task Scheduler)
 setlocal
 cd /d "%~dp0.."
 if not exist "backend\venv\Scripts\python.exe" (

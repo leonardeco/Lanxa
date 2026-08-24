@@ -4,21 +4,21 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: superozono-frontend
+    container_name: lanxa-frontend
     restart: unless-stopped
     ports:
       - "80:80"
     depends_on:
       - backend
     networks:
-      - superozono-net
+      - lanxa-net
 
   # ── Backend API (FastAPI) ──────────────────────────────
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: superozono-api
+    container_name: lanxa-api
     restart: unless-stopped
     ports:
       - "8000:8000"
@@ -33,13 +33,13 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - superozono-net
+      - lanxa-net
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
 
   # ── PostgreSQL 16 ──────────────────────────────────────
   db:
     image: postgres:16-alpine
-    container_name: superozono-db
+    container_name: lanxa-db
     restart: unless-stopped
     ports:
       - "5432:5432"
@@ -55,12 +55,12 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - superozono-net
+      - lanxa-net
 
   # ── Redis 7 ───────────────────────────────────────────
   redis:
     image: redis:7-alpine
-    container_name: superozono-redis
+    container_name: lanxa-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
@@ -70,12 +70,12 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - superozono-net
+      - lanxa-net
 
   # ── pgAdmin 4 ─────────────────────────────────────────
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: superozono-pgadmin
+    container_name: lanxa-pgadmin
     restart: unless-stopped
     ports:
       - "5050:80"
@@ -86,12 +86,12 @@ services:
       db:
         condition: service_healthy
     networks:
-      - superozono-net
+      - lanxa-net
 
 volumes:
   pgdata:
     driver: local
 
 networks:
-  superozono-net:
+  lanxa-net:
     driver: bridge

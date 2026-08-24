@@ -1,16 +1,16 @@
-# Pendientes — Super Ozono ERP
+# Pendientes — Lanxa ERP
 
 Backlog vivo del proyecto. Actualizado: **3 de agosto de 2026** (49ª revisión).
 
 **Resumen de la jornada 2026-08-03:** Setup completo en PC nuevo (Python 3.14, venv, npm, migraciones, seed). Tres bloques entregados directamente a `main` con Hydraia: (1) **#40 drift Alembic** — migración `3deee189e9bd` con FKs nombradas a `tenants` + UniqueConstraints compuestos; `alembic check` en verde sin drift. (2) **#37/#38/#39 login por dominio** — feature reimplementado desde cero (la rama original `fix-login-tenant-domain` nunca fue pusheada al remote): campo `Tenant.dominio`, migración `4e24b843eccd` con backfill Colombia/Perú, router de login actualizado. (3) **start.bat auto-setup** — detecta Python 3.14, crea venv, instala deps, corre migraciones y seed automáticamente en el primer arranque. Pusheado a `origin/main` (`1417fc2..f3340bd`). **Queda**: confirmar dominio real de Perú (#37 técnicamente cerrado pero pendiente validación del negocio).
 
-**Resumen de la jornada 2026-07-27:** Merge + push a `main` de dos ramas grandes: **auditoría de aislamiento cross-tenant** (`fix-cross-tenant-audit`, 8 commits, 394/394 tests) y pulido de **README/DOCUMENTACION** (versiones de stack, módulos faltantes, roadmap sincronizado). Se avanzó también la rama **login por dominio de email** (`fix-login-tenant-domain`, 405/405 tests, actualizada contra el `main` nuevo) — **queda para mañana:** confirmar que el dominio elegido para Perú (`superozonoperu.com`, elegido por Claude a falta de decisión del negocio) es correcto, la prueba visual en navegador (bloqueada por la extensión Chrome sin conectar), y la decisión de merge. Ver tabla "Snapshot" abajo y `BITACORA.md` sesión de hoy para el detalle completo.
+**Resumen de la jornada 2026-07-27:** Merge + push a `main` de dos ramas grandes: **auditoría de aislamiento cross-tenant** (`fix-cross-tenant-audit`, 8 commits, 394/394 tests) y pulido de **README/DOCUMENTACION** (versiones de stack, módulos faltantes, roadmap sincronizado). Se avanzó también la rama **login por dominio de email** (`fix-login-tenant-domain`, 405/405 tests, actualizada contra el `main` nuevo) — **queda para mañana:** confirmar que el dominio elegido para Perú (`superozonoperu.com`, elegido por Claude a falta de decisión del negocio) es correcto, la prueba visual en navegador (bloqueada por la extensión Chrome sin conectar), y la decisión de merge.
 
-**Resumen de la jornada 2026-07-23:** Carril **Perú (Run 6)** — tenant separado + módulo `Ventas Diarias` + importador del histórico Excel, en rama `run6-peru-ventas-diarias`. ✅ **Mergeada 2026-07-24** (tenant Perú onboardeado en producción real ese mismo día). Llegó Excel de Ecuador (`CUENTAS ECUADOR.xlsx`) — revisado, estructura distinta a Perú, queda para un Run aparte. Fuente: `BITACORA.md` sesión 23-jul + `docs/hydraia/plans/2026-07-23-run6-peru-tenant-ventas-diarias*.md`.
+**Resumen de la jornada 2026-07-23:** Carril **Perú (Run 6)** — tenant separado + módulo `Ventas Diarias` + importador del histórico Excel, en rama `run6-peru-ventas-diarias`. ✅ **Mergeada 2026-07-24** (tenant Perú onboardeado en producción real ese mismo día). Llegó Excel de Ecuador (`CUENTAS ECUADOR.xlsx`) — revisado, estructura distinta a Perú, queda para un Run aparte..
 
-**Resumen de la jornada 2026-07-21:** Carril **gerencial / documentación / preparación Contador** (sin cambios de negocio en código). Entregables en Escritorio: informe gerencial Word (línea de tiempo real + estimación de mercado), presentación PPTX 12 slides, acta de validación contable (Word+PDF) con 7 decisiones, resumen de jornada para área administrativa (PDF). Verificado backlog abierto. Solicitado a admin (próximo): Excel de inventario/cuentas/precios + capturas del ERP actual de auxiliares. Fuente: `BITACORA.md` sesión 21-jul + `DOCUMENTACION.md` §13 #59–#61.
+**Resumen de la jornada 2026-07-21:** Carril **gerencial / documentación / preparación Contador** (sin cambios de negocio en código). Entregables en Escritorio: informe gerencial Word (línea de tiempo real + estimación de mercado), presentación PPTX 12 slides, acta de validación contable (Word+PDF) con 7 decisiones, resumen de jornada para área administrativa (PDF). Verificado backlog abierto. Solicitado a admin (próximo): Excel de inventario/cuentas/precios + capturas del ERP actual de auxiliares..
 
-**Fuente única de pendientes:** este archivo. Completados → `DOCUMENTACION.md` §13 + `BITACORA.md`.
+**Fuente única de pendientes:** este archivo. Completados → `DOCUMENTACION.md` §13.
 
 Estado: LAN **v0.3.0** operativa. Suite API (Postgres local) + Vitest + E2E (CI informativo). Material Contador listo para reunión (acta imprimible).
 
@@ -40,9 +40,9 @@ Estado: LAN **v0.3.0** operativa. Suite API (Postgres local) + Vitest + E2E (CI 
 | 7b | Vigencia certificado TLS | ✅ Documentado; cert regenerado con IP `.131` + localhost (CA local) |
 | 27 | Revisar job E2E del CI en cada release | Abierto informativo (`continue-on-error`) |
 | 33op | Rotar clave Superusuario en UI | Opcional |
-| smoke | Smoke diario | ✅ `ops/smoke-diario.bat` + tarea **SuperOzonoERP-SmokeDiario** 08:00. Verificado login Superusuario |
-| 36 | **Tarea 6 Run Perú — alta real del tenant** | ✅ **Completado 2026-07-24**: tenant Perú (`codigo="peru"`) onboardeado en producción real, admin `auxiliar.peru@superozonoglobal.com` |
-| 37 | **Confirmar dominio de email de Perú** | 🟡 **Técnicamente resuelto 2026-08-03** — feature implementado en `main` (migración `4e24b843eccd`). Dominio elegido: `superozonoperu.com`. **Queda:** validación por el negocio. Si no es correcto: `UPDATE tenants SET dominio = 'dominio-real.com' WHERE codigo = 'peru';` + notificar al usuario auxiliar.peru |
+| smoke | Smoke diario | ✅ `ops/smoke-diario.bat` + tarea **LanxaERP-SmokeDiario** 08:00. Verificado login Superusuario |
+| 36 | **Tarea 6 Run Perú — alta real del tenant** | ✅ **Completado 2026-07-24**: tenant Perú (`codigo="peru"`) onboardeado en producción real, admin del tenant Perú |
+| 37 | **Confirmar dominio de email de Perú** | 🟡 **Técnicamente resuelto 2026-08-03** — feature implementado en `main` (migración `4e24b843eccd`). **Queda:** validar el dominio de email de cada tenant en Ajustes / `tenants.dominio`. |
 | 38 | **Prueba en navegador — login por dominio** | 🟡 **Pendiente** — probar en el HTTPS de LAN con el Superusuario de `backend/.env` (no documentar la clave aquí). |
 | 39 | **Merge — `fix-login-tenant-domain`** | ✅ **Cerrado 2026-08-03** — feature reimplementado directamente en `main` (rama original nunca pusheada al remote). Commit `f3340bd`. |
 | 40 | **Migración de `UniqueConstraint`s + FK tenants** | ✅ **Cerrado 2026-08-03** — migración `3deee189e9bd` aplicada. FKs nombradas, unique constraints compuestos, `alembic check` sin drift. |
@@ -104,7 +104,7 @@ Estado: LAN **v0.3.0** operativa. Suite API (Postgres local) + Vitest + E2E (CI 
 
 | Prioridad | Ítems |
 |---|---|
-| **Validar con negocio** | #37 confirmar dominio real de Perú (`superozonoperu.com`, sin verificar) |
+| **Validar con negocio** | #37 confirmar dominio de email de cada tenant |
 | **Cuando quieras** | #38 prueba visual en navegador (`https://192.168.20.108:5173`) |
 | ~~#39 merge login-domain~~ | ✅ Cerrado 2026-08-03 |
 | ~~#40 UniqueConstraints~~ | ✅ Cerrado 2026-08-03 |
@@ -123,4 +123,4 @@ Estado: LAN **v0.3.0** operativa. Suite API (Postgres local) + Vitest + E2E (CI 
 
 **Material Contador (Escritorio):** `Entrega-Contador-PUC\` · `Acta-Validacion-Contador-PUC-SuperOzono.pdf` · informe `Linea-de-Tiempo-Desarrollo-SuperOzono-ERP.docx` · PPTX gerencial · `Resumen-Jornada-Administrativa-SuperOzono.pdf`.
 
-**Regla:** al completar un ítem, moverlo a `DOCUMENTACION.md` §13 y registrar en `BITACORA.md`.
+**Regla:** al completar un ítem, moverlo a `DOCUMENTACION.md` §13.

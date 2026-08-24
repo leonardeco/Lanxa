@@ -1,19 +1,19 @@
 # Copia los backups cifrados a un destino fuera del disco principal (p. ej. OneDrive).
 # Uso:
 #   powershell -NoProfile -ExecutionPolicy Bypass -File scripts\copy_backups_offsite.ps1
-#   powershell ... -File scripts\copy_backups_offsite.ps1 -Dest "D:\Backups\SuperOzono"
+#   powershell ... -File scripts\copy_backups_offsite.ps1 -Dest "D:\Backups\Lanxa"
 #
 # No copia claves ni .env. Solo archivos .enc (y carpetas de auditoria si existen).
 
 param(
-    [string]$Source = "C:\SuperOzono-Backups",
+    [string]$Source = "C:\Lanxa-Backups",
     [string]$Dest = ""
 )
 
 $ErrorActionPreference = "Stop"
 
 if (-not $Dest) {
-    $oneDrive = Join-Path $env:USERPROFILE "OneDrive\SuperOzono-Backups-Offsite"
+    $oneDrive = Join-Path $env:USERPROFILE "OneDrive\Lanxa-Backups-Offsite"
     $Dest = $oneDrive
 }
 
