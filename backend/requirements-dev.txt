@@ -7,10 +7,10 @@ pytest-asyncio==1.4.0
 pytest-cov==7.1.0
 
 # ── Análisis estático ────────────────────────────────────
-flake8==7.3.0
-pre-commit==4.6.0
+flake8==7.4.1
+pre-commit==4.6.2
 pip-audit==2.10.1
-mypy==2.2.0
+mypy==2.3.1
 autopep8==2.3.2
 
 # ── Stubs de tipos para mypy ─────────────────────────────
